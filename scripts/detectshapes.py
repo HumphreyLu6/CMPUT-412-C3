@@ -14,7 +14,7 @@ class ContourDetector():
     def __init__(self):
         pass
 
-    def getContours(self, hsv, loc = 2, loc3count = 0):
+    def getContours(self, hsv, loc = 0, loc3count = 0):
         '''
         Return: green contours, red contours
         '''

@@ -28,7 +28,7 @@ from nav_msgs.msg import OccupancyGrid
 
 from detectshapes import ContourDetector
 from detectshapes import Contour
-from Util import signal, rotate
+from util import signal, rotate
 
 
 def approxEqual(a, b, tol = 0.001):
@@ -362,7 +362,8 @@ class SmCore:
                                     remapping={'rotate_turns':'turns'})
             smach.StateMachine.add('Work3', Work3(),
                                     transitions={'rotate':'Rotate'},
-                                    remapping={'rotate_turns':'turns'})                                                              
+                                    remapping={'rotate_turns':'turns'})   
+
             self.bridge = cv_bridge.CvBridge()
 
             self.integral = 0
