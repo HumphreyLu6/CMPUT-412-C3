@@ -97,8 +97,8 @@ class ARtagPark(smach.State):
             print "waypoint = ", waypoint
             rospy.sleep(3)
             goal = util.goal_pose(waypoint, 'map', 'pose')
-            goal.target_pose.pose.orientation.x = waypoint.position.x - 0.2
-            goal.target_pose.pose.orientation.y = waypoint.position.y - 0.2
+            #goal.target_pose.pose.orientation.x = waypoint.position.x - 0.2
+            #goal.target_pose.pose.orientation.y = waypoint.position.y - 0.2
             self.client.send_goal(goal)
             self.client.wait_for_result()
             util.signal(1, onColor=Led.GREEN)

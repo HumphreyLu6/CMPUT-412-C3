@@ -65,7 +65,7 @@ def goal_pose(pose, frame_id = "goal", pose_type = 'list'):
         goal_pose.target_pose.pose.orientation.z = pose[1][2]
         goal_pose.target_pose.pose.orientation.w = pose[1][3]
     return goal_pose
-
+    
 def rotate(angle=90, max_error=3, anglular_scale=1.0):
     '''
     input: angle=90, max_error=3, anglular_scale=1.0
