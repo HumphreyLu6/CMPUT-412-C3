@@ -15,6 +15,9 @@ led_pub_1 = rospy.Publisher('/mobile_base/commands/led1', Led, queue_size=1)
 led_pub_2 = rospy.Publisher('/mobile_base/commands/led2', Led, queue_size=1)
 sound_pub = rospy.Publisher('/mobile_base/commands/sound', Sound, queue_size=1)
 
+def approxEqual(a, b, tol = 0.001):
+    return abs(a - b) <= tol
+
 def signal(quantity=1,onColor=Led.GREEN,offColor=Led.BLACK,interval=0.5):
     
     if quantity == 1:
@@ -56,6 +59,10 @@ def goal_pose(pose, frame_id = "goal"):
     return goal_pose
 
 def rotate(angle=90, max_error=3, anglular_scale=1.0):
+    '''
+    input: angle=90, max_error=3, anglular_scale=1.0
+    '''
+
     init_theta = wait_for_odom_angle()
     theta = init_theta
     direction = numpy.sign(angle)

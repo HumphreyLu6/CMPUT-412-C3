@@ -41,14 +41,28 @@ class ContourDetector():
         for item in green_items:
             cv2.drawContours(hsv, [item], -1, (255,0,0), 6)
         for item in red_items:
+            #print numpy.mean(item.squeeze()[:,0]), numpy.min(item.squeeze()[:,0]), numpy.max(item.squeeze()[:,0]), w
             cv2.drawContours(hsv, [item], -1, (255,255,0), 6)
 
-        cv2.imshow("blur_hsv", hsv)
+        #cv2.imshow("blur_hsv", hsv)
         #cv2.imshow(color + "mask", mask)
         #cv2.moveWindow(color + "mask", 710, 0)
-        cv2.waitKey(4)
+        #cv2.waitKey(4)
 
         return green_contours, red_contours
+    
+    def get_red_contour_range(self, hsv, shape = Contour.Unidentified):
+        if shape == Contour.Unidentified:
+            return numpy.nan,numpy.nan
+        else:
+            blurred_hsv = cv2.pyrMeanShiftFiltering(hsv, 15, 20)
+            red_mask = threshold_hsv_360(100, 50, 10, 255, 255, 340, blurred_hsv) #20, 320
+            _,ori_red_countours,_ = cv2.findContours(red_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            red_contours, red_items = contours_filter(ori_red_countours)
+            for contour, item in zip(red_contours, red_items):
+                if contour == shape:
+                    return numpy.min(item.squeeze()[:,0]), numpy.max(item.squeeze()[:,0])
+            return numpy.nan,numpy.nan
 
 def contours_filter(ori_contours):
     filtered_contours = []
@@ -65,7 +79,7 @@ def contours_filter(ori_contours):
         else:
             contour = Contour.Circle
         if contour != Contour.Unidentified and cv2.contourArea(item) > 1000:
-            print contour, cv2.contourArea(item)
+            #print contour, cv2.contourArea(item)
             filtered_contours.append(contour)
             filtered_items.append(item)
     return filtered_contours, filtered_items
