@@ -42,20 +42,28 @@ def wait_for_odom_angle(timeout=None):
     theta = angles[2] * 180 / 3.14159
     return theta
 
-def goal_pose(pose, frame_id = "goal"): 
+def goal_pose(pose, frame_id = "goal", pose_type = 'list'): 
     goal_pose = MoveBaseGoal()
 
     goal_pose.target_pose.header.frame_id = frame_id
-
-    goal_pose.target_pose.pose.position.x = pose[0][0]
-    goal_pose.target_pose.pose.position.y = pose[0][1]
-    goal_pose.target_pose.pose.position.z = pose[0][2]
-    
-    goal_pose.target_pose.pose.orientation.x = pose[1][0]
-    goal_pose.target_pose.pose.orientation.y = pose[1][1]
-    goal_pose.target_pose.pose.orientation.z = pose[1][2]
-    goal_pose.target_pose.pose.orientation.w = pose[1][3]
-
+    if pose_type == 'pose':
+        goal_pose.target_pose.pose.position.x = pose.position.x
+        goal_pose.target_pose.pose.position.y = pose.position.y
+        goal_pose.target_pose.pose.position.z = pose.position.z
+        
+        goal_pose.target_pose.pose.orientation.x = pose.orientation.x
+        goal_pose.target_pose.pose.orientation.y = pose.orientation.y
+        goal_pose.target_pose.pose.orientation.z = pose.orientation.z
+        goal_pose.target_pose.pose.orientation.w = pose.orientation.w
+    else:
+        goal_pose.target_pose.pose.position.x = pose[0][0]
+        goal_pose.target_pose.pose.position.y = pose[0][1]
+        goal_pose.target_pose.pose.position.z = pose[0][2]
+        
+        goal_pose.target_pose.pose.orientation.x = pose[1][0]
+        goal_pose.target_pose.pose.orientation.y = pose[1][1]
+        goal_pose.target_pose.pose.orientation.z = pose[1][2]
+        goal_pose.target_pose.pose.orientation.w = pose[1][3]
     return goal_pose
 
 def rotate(angle=90, max_error=3, anglular_scale=1.0):

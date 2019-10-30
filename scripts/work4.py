@@ -10,19 +10,31 @@ from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Twist
 import cv2, cv_bridge
 
-SEARCH_WAYPOINTS = {'1': [(3.03781, 0.07015, 0.0), (0.0, 0.0, -0.384214755907, 0.923243749691)],
-                    '2': [(4.16285, 1.27578, 0.0), (0.0, 0.0, -0.359671123975, 0.933079140576)]}
+SEARCH_WAYPOINTS = {'1': [(-0.822, -0.009, 0.010), (0, 0, 0.118, 0.993)],
+                    '2': [(-1.313,  1.434, 0.010), (0, 0, 0.127, 0.992)]}
 
-PARK_SPOT_WAYPOINTS = {'1': [(5.10959,  1.47603, 0.0), (0.0, 0.0, -0.350370856062, 0.936611052264)],
-                       '2': [(4.64341,  0.88347, 0.0), (0.0, 0.0, -0.314489530921, 0.949260941439)],
-                       '3': [(4.14429,  0.27720, 0.0), (0.0, 0.0, -0.302952105343, 0.953005782705)],
-                       '4': [(3.69111, -0.36977, 0.0), (0.0, 0.0, -0.296874921752, 0.954916373739)],
-                       '5': [(3.27664, -1.03622, 0.0), (0.0, 0.0, -0.290952676844, 0.956737445613)],
-                       '6': [(3.31244,  1.39406, 0.0), (0.0, 0.0, -0.275217900052, 0.961381873914)],
-                       '7': [(2.90084,  0.73873, 0.0), (0.0, 0.0, -0.273119836863, 0.961980017834)],
-                       '8': [(2.51752, -0.50744, 0.0), (0.0, 0.0, -0.295958131198, 0.955200913200)]}
+PARK_SPOT_WAYPOINTS = {'1': [(-0.803,  2.353, 0.010), (0, 0,  0.105,  0.994)],
+                       '2': [(-0.608,  1.657, 0.010), (0, 0,  0.134,  0.991)],
+                       '3': [(-0.401,  0.869, 0.010), (0, 0,  0.124,  0.992)],
+                       '4': [(-0.291,  0.079, 0.010), (0, 0,  0.106,  0.994)],
+                       '5': [(-0.169, -0.719, 0.010), (0, 0,  0.092,  0.996)],
+                       '6': [(-1.922,  1.029, 0.010), (0, 0,  0.997, -0.080)],
+                       '7': [(-1.694,  0.291, 0.010), (0, 0,  0.992, -0.123)],
+                       '8': [(-1.077, -0.846, 0.010), (0, 0, -0.621,  0.784)]}
 
-ON_RAMP_WAYPOINT = [(3.37777, 1.49040, 0.0),(0.0, 0.0, 0.885636895101, 0.464378391008)]
+OFF_RAMP_WAYPOINT = [(-1.895, -0.507, 0.010), (0.000, 0.000, 0.156, 0.988)] #start
+
+ON_RAMP_WAYPOINT = [(-2.901, 1.809, 0.010), (0.000, 0.000, 0.960, -0.281)] #end
+
+def get_cloest_park_spot(x, y):
+    tmp_dict = {}
+    for item in PARK_SPOT_WAYPOINTS:
+        tmp_x = PARK_SPOT_WAYPOINTS[item][0][0] - x
+        tmp_y = PARK_SPOT_WAYPOINTS[item][0][1] - y
+        dist = numpy.sqrt(tmp_x**2 + tmp_y**2)
+        tmp_dict[item] = dist
+    odom_sub.unregister()
+    return min(tmp_dict, key=tmp_dict.get)
 
 class SearchARtag(smach.State):
     def __init__(self):
@@ -54,7 +66,7 @@ class SearchARtag(smach.State):
     def search(self):
         for i in range(4):
             if len(self.tags) != 0:
-                ARtag = self.tags[0]
+                ARtag = self.tags[0][1]
                 return True, ARtag
             else:
                 util.rotate(angle=90)
@@ -82,7 +94,11 @@ class ARtagPark(smach.State):
         else: 
             waypoint = userdata.ARtagPark_in_AR_tag_pose
             #waypoint.position[0]
-            goal = util.goal_pose(waypoint, 'map')
+            print "waypoint = ", waypoint
+            rospy.sleep(3)
+            goal = util.goal_pose(waypoint, 'map', 'pose')
+            goal.target_pose.pose.orientation.x = waypoint.position.x - 0.2
+            goal.target_pose.pose.orientation.y = waypoint.position.y - 0.2
             self.client.send_goal(goal)
             self.client.wait_for_result()
             util.signal(1, onColor=Led.GREEN)
@@ -318,40 +334,40 @@ if __name__ == "__main__":
     rospy.spin()      
 
 #test UNMarked
-if __name__ == "__main__":
-    g_tags = {}
-    rospy.init_node("work4_test")
+# if __name__ == "__main__":
+#     g_tags = {}
+#     rospy.init_node("work4_test")
 
-    sm = smach.StateMachine(outcomes=['end'])
-    sm.userdata.unmarked_pose = PARK_SPOT_WAYPOINTS['1']
-    sm.userdata.shape_at_loc2 = detectshapes.Contour.Circle
-    with sm:   
-        smach.StateMachine.add('NoLabelPark', NoLabelPark(),
-                                transitions={'return':'end',
-                                            'end':'end'
-                                            },
-                                remapping={'NoLabelPark_in_unmarked_pose':'unmarked_pose'})
-    outcome = sm.execute()
-    rospy.spin()    
+#     sm = smach.StateMachine(outcomes=['end'])
+#     sm.userdata.unmarked_pose = PARK_SPOT_WAYPOINTS['1']
+#     sm.userdata.shape_at_loc2 = detectshapes.Contour.Circle
+#     with sm:   
+#         smach.StateMachine.add('NoLabelPark', NoLabelPark(),
+#                                 transitions={'return':'end',
+#                                             'end':'end'
+#                                             },
+#                                 remapping={'NoLabelPark_in_unmarked_pose':'unmarked_pose'})
+#     outcome = sm.execute()
+#     rospy.spin()    
 
 #test Contour
-if __name__ == "__main__":
-    g_tags = {}
-    rospy.init_node("work4_test")
+# if __name__ == "__main__":
+#     g_tags = {}
+#     rospy.init_node("work4_test")
 
-    sm = smach.StateMachine(outcomes=['end'])
-    sm.userdata.unmarked_pose = PARK_SPOT_WAYPOINTS['1']
-    sm.userdata.shape_at_loc2 = detectshapes.Contour.Circle
-    with sm:   
-        smach.StateMachine.add('SearchContour', SearchContour(),
-                                transitions={'found_contour':'ContourPark',
-                                            'end':'end',
-                                            'nothing_found':'end',
-                                            })
-        smach.StateMachine.add('ContourPark', ContourPark(),
-                                transitions={'return':'end',
-                                            'end':'end'
-                                            },
-                                remapping={'ContourPark_in_contour':'shape_at_loc2'})
-    outcome = sm.execute()
-    rospy.spin() 
+#     sm = smach.StateMachine(outcomes=['end'])
+#     sm.userdata.unmarked_pose = PARK_SPOT_WAYPOINTS['1']
+#     sm.userdata.shape_at_loc2 = detectshapes.Contour.Circle
+#     with sm:   
+#         smach.StateMachine.add('SearchContour', SearchContour(),
+#                                 transitions={'found_contour':'ContourPark',
+#                                             'end':'end',
+#                                             'nothing_found':'end',
+#                                             })
+#         smach.StateMachine.add('ContourPark', ContourPark(),
+#                                 transitions={'return':'end',
+#                                             'end':'end'
+#                                             },
+#                                 remapping={'ContourPark_in_contour':'shape_at_loc2'})
+#     outcome = sm.execute()
+#     rospy.spin() 
