@@ -158,8 +158,18 @@ class ON_RAMP(smach.State):
             goal = util.goal_pose(ON_RAMP_WAYPOINT,frame_id='map')
             self.client.send_goal(goal)
             self.client.wait_for_result()
-            return 'returned'
 
+            self.move_forward(0.2)
+            return 'returned'
+    
+    def move_forward(self, meters):
+        twist_pub = rospy.Publisher("/cmd_vel_mux/input/teleop", Twist, queue_size=1)
+        tmp = time.time()
+        while (time.time() - tmp) < 2:
+            twist = Twist()
+            twist.linear.x = 0.3
+            twist_pub.publish(twist)
+                
 if __name__ == "__main__":
     rospy.init_node("work4_test")
 
