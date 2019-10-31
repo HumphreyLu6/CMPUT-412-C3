@@ -24,22 +24,24 @@ PARK_SPOT_WAYPOINTS = {'1': [(-0.803,  2.353, 0.010), (0, 0,  0.105,  0.994)],
 
 OFF_RAMP_WAYPOINT = [(-1.895, -0.507, 0.010), (0.000, 0.000, 0.326, 0.945)] #start
 
-ON_RAMP_WAYPOINT = [(-2.961, 1.680, 0.010), (0.000, 0.000, 0.960, -0.281)] #end
-    
+
+ON_RAMP_WAYPOINT = [(-2.901, 1.809, 0.010), (0.000, 0.000, 0.960, -0.281)] #end
+#ON_RAMP_WAYPOINT = [(-2.961, 1.680, 0.010), (0.000, 0.000, 0.960, -0.281)] #end
+
 class Park(smach.State):
     def __init__(self):
-        smach.State.__init__(self, 
+        smach.State.__init__(self,
                                 outcomes=['next', 'end', 'return'],
                                 input_keys=['Park_in_process'],
                                 output_keys=['Park_in_process']
         )
-        self.client = actionlib.SimpleActionClient('move_base', MoveBaseAction) 
+        self.client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
         self.client.wait_for_server()
-    
+
     def execute(self, userdata):
         if rospy.is_shutdown():
             return 'end'
-        else: 
+        else:
             process = userdata.Park_in_process
             if process['spot_id'] == 1:
                 self.set_init_map_pose()
@@ -62,7 +64,7 @@ class Park(smach.State):
                 return 'return'
             return 'next'
 
-    
+
     def search(self, process, search_orientation = [0]):
         if process['ARtag_found'] == False:
             ar_sub = rospy.Subscriber("ar_pose_marker", AlvarMarkers, self.ar_callback)
@@ -70,7 +72,7 @@ class Park(smach.State):
         if process['contour_found'][1] == False:
             image_sub = rospy.Subscriber("camera/rgb/image_raw", Image, self.shape_cam_callback)
             rospy.wait_for_message("camera/rgb/image_raw", Image)
-        
+
         for angle in search_orientation:
             if angle != 0:
                 util.rotate(angle)
@@ -91,13 +93,13 @@ class Park(smach.State):
             util.signal(1, onColor=Led.RED)
             process['unmarked_spot_id'][1] = True
         return process
-    
+
     def search_ARtag(self):
         if len(self.tags) != 0:
             print "tag_id:", self.tags[0]
             return True
         return False
-    
+
     def search_contour(self, process):
         cd = detectshapes.ContourDetector()
         _, red_contours = cd.getContours(self.hsv)
@@ -110,12 +112,12 @@ class Park(smach.State):
         self.tags = []
         for marker in msg.markers:
             self.tags.append(int(marker.id))
-    
+
     def shape_cam_callback(self, msg):
         bridge = cv_bridge.CvBridge()
         image = bridge.imgmsg_to_cv2(msg, desired_encoding = 'bgr8')
         self.hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-    
+
     def set_init_map_pose(self):
         #referenced from https://www.cnblogs.com/kuangxionghui/p/8335853.html
 
@@ -140,28 +142,28 @@ class Park(smach.State):
         for _ in range(1):
             tmp = time.time()
             init_pose_pub.publish(p)
-            util.signal(1)
+            #util.signal(1)
         rospy.sleep(3)
 
 class ON_RAMP(smach.State):
     def __init__(self):
-        smach.State.__init__(self, 
+        smach.State.__init__(self,
                                 outcomes=['returned', 'end']
         )
-        self.client = actionlib.SimpleActionClient('move_base', MoveBaseAction) 
+        self.client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
         self.client.wait_for_server()
-    
+
     def execute(self, userdata):
         if rospy.is_shutdown():
             return 'end'
-        else: 
+        else:
             goal = util.goal_pose(ON_RAMP_WAYPOINT,frame_id='map')
             self.client.send_goal(goal)
             self.client.wait_for_result()
 
             self.move_forward(0.2)
             return 'returned'
-    
+
     def move_forward(self, meters):
         twist_pub = rospy.Publisher("/cmd_vel_mux/input/teleop", Twist, queue_size=1)
         tmp = time.time()
@@ -169,7 +171,7 @@ class ON_RAMP(smach.State):
             twist = Twist()
             twist.linear.x = 0.3
             twist_pub.publish(twist)
-                
+
 if __name__ == "__main__":
     rospy.init_node("work4_test")
 
@@ -180,7 +182,7 @@ if __name__ == "__main__":
                             'unmarked_spot_id': [8,False]
                             }
 
-    with sm:        
+    with sm:
         smach.StateMachine.add('Park', Park(),
                                 transitions={'next':'Park',
                                             'end':'end',
@@ -191,6 +193,6 @@ if __name__ == "__main__":
         smach.StateMachine.add('ON_RAMP', ON_RAMP(),
                                 transitions={'end':'end',
                                              'returned':'returned'})
-    
+
     outcome = sm.execute()
     rospy.spin()

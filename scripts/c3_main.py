@@ -287,6 +287,7 @@ class Work2Follow(smach.State):
         else:
             userdata.rotate_turns = 1
             on_additional_line = False
+            twist_pub.publish(Twist())
             return 'returned'
 
     def control_speed(self):
