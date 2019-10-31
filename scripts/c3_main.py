@@ -53,12 +53,24 @@ class Follow(smach.State):
         smach.State.__init__(self, outcomes=['running', 'end', 'turning'])
 
     def execute(self, userdata):
-        global stop, turn, twist_pub, current_work
+        global stop, turn, twist_pub, current_work, g_full_red_line_count
 
         if turn:
             return 'turning'
         if not stop:
-            twist_pub.publish(current_twist)
+            if g_full_red_line_count == 2:
+                tmp_time = time.time()
+                while time.time() - tmp_time < 1:
+                    twist_pub.publish(current_twist)
+                twist_pub.publish(Twist())
+                rotate(-45)
+                tmp_time = time.time()
+                while time.time() - tmp_time < 1:
+                    twist_pub.publish(current_twist)
+                twist_pub.publish(Twist())
+                return 'end'
+            else:
+                twist_pub.publish(current_twist)
             return 'running'
         else:
             twist = Twist()
@@ -394,7 +406,7 @@ class SmCore:
         g_odom['yaw_z'] = yaw[2]
 
     def usb_image_callback(self, msg):
-        global stop, turn, current_work, white_mask, red_mask, image_width
+        global stop, turn, current_work, white_mask, red_mask, image_width, g_full_red_line_count
 
         full_red_line = False
 
@@ -466,6 +478,7 @@ class SmCore:
                     radius = int(radius)
                     cv2.circle(image, center, radius, (0, 255, 0), 2)
                     if self.cx_white == 0: #full red line
+                        g_full_red_line_count += 1
                         full_red_line = True
                         stop = True
                     elif x + radius < self.cx_white: #half red line
@@ -492,6 +505,7 @@ turn = False
 work = True
 shape_at_loc2 = None
 redline_count_loc3 = 0
+g_full_red_line_count = 0
 current_work = 1
 on_additional_line = False
 white_mask = None
