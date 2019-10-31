@@ -92,8 +92,10 @@ class Follow(smach.State):
         smach.State.__init__(self, outcomes=['running', 'end', 'turning', 'work4'], output_keys=['process'])
 
     def execute(self, userdata):
-        global stop, turn, twist_pub, current_work, unmarked_spot_id, shape_at_loc2
-
+        global stop, turn, twist_pub, current_work, unmarked_spot_id, shape_at_loc2, g_red_line_count, work4_returned
+        if work4_returned and turn:
+            turn = False
+            work4_returned = False
         if turn:
             return 'turning'
         if not stop:
@@ -105,7 +107,9 @@ class Follow(smach.State):
             rospy.sleep(0.5)
 
             #off ramp
-            if g_red_line_count == 2:# or True:
+            if g_red_line_count == 2:
+                work4_returned = True
+                g_red_line_count += 1
                 tmp_time = time.time()
                 while time.time() - tmp_time < 2:
                     twist_pub.publish(current_twist)
@@ -586,7 +590,7 @@ image_width = 0
 g_odom = {'x':0.0, 'y':0.0, 'yaw_z':0.0}
 g_start = False
 unmarked_spot_id = None
-
+work4_returned = False
 rospy.init_node('c2_main')
 
 twist_pub = rospy.Publisher("/cmd_vel_mux/input/teleop", Twist, queue_size=1)
