@@ -105,12 +105,12 @@ class Follow(smach.State):
             rospy.sleep(0.5)
 
             #off ramp
-            if g_red_line_count == 2:# or True:
+            if g_red_line_count == 2 or True:
                 tmp_time = time.time()
                 while time.time() - tmp_time < 2:
                     twist_pub.publish(current_twist)
                 twist_pub.publish(Twist())
-                rotate(-45)
+                rotate(-30)
                 tmp_time = time.time()
                 while time.time() - tmp_time < 2:
                     twist_pub.publish(current_twist)
@@ -558,8 +558,8 @@ class SmCore:
                 elif "PassThrough" in self.sm.get_active_states():
                     stop = False
 
-            cv2.imshow("refer_dot", image)
-            cv2.waitKey(3)
+            #cv2.imshow("refer_dot", image)
+            #cv2.waitKey(3)
             #print stop, turn
     def execute(self):
         begin = time.time()

@@ -44,10 +44,10 @@ class ContourDetector():
             #print numpy.mean(item.squeeze()[:,0]), numpy.min(item.squeeze()[:,0]), numpy.max(item.squeeze()[:,0]), w
             cv2.drawContours(hsv, [item], -1, (255,255,0), 6)
 
-        #cv2.imshow("blur_hsv", hsv)
-        #cv2.imshow(color + "mask", mask)
+        cv2.imshow("blur_hsv", hsv)
+        cv2.imshow("redmask", red_mask)
         #cv2.moveWindow(color + "mask", 710, 0)
-        #cv2.waitKey(4)
+        cv2.waitKey(4)
 
         return green_contours, red_contours
     

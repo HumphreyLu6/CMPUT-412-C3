@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import smach, smach_ros, rospy, numpy
+import smach, smach_ros, rospy, numpy, math, time
 import actionlib
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 from ar_track_alvar_msgs.msg import AlvarMarkers
@@ -7,7 +7,7 @@ import util, detectshapes
 from kobuki_msgs.msg import Led, Sound
 from sensor_msgs.msg import Image, LaserScan
 from nav_msgs.msg import Odometry
-from geometry_msgs.msg import Twist
+from geometry_msgs.msg import Twist, PoseWithCovarianceStamped
 import cv2, cv_bridge
 
 SEARCH_WAYPOINTS = {'1': [(-0.822, -0.009, 0.010), (0, 0, 0.118, 0.993)],
@@ -41,11 +41,13 @@ class Park(smach.State):
             return 'end'
         else: 
             process = userdata.Park_in_process
+            if process['spot_id'] == 1:
+                self.set_init_map_pose()
             waypoint = PARK_SPOT_WAYPOINTS[str(process['spot_id'])]
             goal = util.goal_pose(waypoint, 'map', 'list')
             self.client.send_goal(goal)
             self.client.wait_for_result()
-
+            #util.signal(3) #debug
             search_orientation = [0]
             if process['spot_id'] == 1:
                 search_orientation.append(90)
@@ -111,6 +113,33 @@ class Park(smach.State):
         bridge = cv_bridge.CvBridge()
         image = bridge.imgmsg_to_cv2(msg, desired_encoding = 'bgr8')
         self.hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    
+    def set_init_map_pose(self):
+        #referenced from https://www.cnblogs.com/kuangxionghui/p/8335853.html
+
+        init_pose_pub = rospy.Publisher("initialpose", PoseWithCovarianceStamped, latch=True, queue_size=1)
+        rospy.loginfo("start set pose...")
+        p = PoseWithCovarianceStamped()
+        p.header.stamp = rospy.Time.now()
+        p.header.frame_id = "map"
+        p.pose.pose.position.x = OFF_RAMP_WAYPOINT[0][0]
+        p.pose.pose.position.y = OFF_RAMP_WAYPOINT[0][1]
+        p.pose.pose.position.z = OFF_RAMP_WAYPOINT[0][2]
+
+        p.pose.pose.orientation.x = OFF_RAMP_WAYPOINT[1][0]
+        p.pose.pose.orientation.y = OFF_RAMP_WAYPOINT[1][1]
+        p.pose.pose.orientation.z = OFF_RAMP_WAYPOINT[1][2]
+        p.pose.pose.orientation.w = OFF_RAMP_WAYPOINT[1][3]
+
+        p.pose.covariance[6 * 0 + 0] = 0.5 * 0.5
+        p.pose.covariance[6 * 1 + 1] = 0.5 * 0.5
+        p.pose.covariance[6 * 3 + 3] = math.pi / 12.0 * math.pi / 12.0
+
+        for _ in range(1):
+            tmp = time.time()
+            init_pose_pub.publish(p)
+            util.signal(1)
+        rospy.sleep(3)
 
 class ON_RAMP(smach.State):
     def __init__(self):
@@ -136,7 +165,7 @@ if __name__ == "__main__":
     sm.userdata.process = {'spot_id': 1,
                             'ARtag_found': False,
                             'contour_found': False,
-                            'unmarked_spot_id': [4,False]}
+                            'unmarked_spot_id': [8,False]}
 
     with sm:        
         smach.StateMachine.add('Park', Park(),
