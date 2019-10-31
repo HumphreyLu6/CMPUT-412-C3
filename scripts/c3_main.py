@@ -55,7 +55,7 @@ class Wait(smach.State):
 
     def execute(self, userdata):
         global g_start, unmarked_spot_id
-        
+
         joy_sub = rospy.Subscriber("joy", Joy, self.joy_callback)
         while not rospy.is_shutdown():
             if g_start and unmarked_spot_id != None:
@@ -63,7 +63,7 @@ class Wait(smach.State):
                 return 'start'
         joy_sub.unregister()
         return 'end'
-    
+
     def joy_callback(self, msg):
         global unmarked_spot_id, g_start
         if msg.buttons[0] == 1: #X
@@ -93,7 +93,7 @@ class Follow(smach.State):
 
     def execute(self, userdata):
         global stop, turn, twist_pub, current_work, unmarked_spot_id, shape_at_loc2, g_red_line_count, work4_returned
-        
+
         if work4_returned and turn:
             turn = False
             work4_returned = False
@@ -128,9 +128,9 @@ class Follow(smach.State):
                 return 'work4'
 
             return 'end'
-        
-                
-                
+
+
+
 class PassThrough(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['running', 'end', 'finished'])
@@ -149,7 +149,7 @@ class PassThrough(smach.State):
 
 class Rotate(smach.State):
     def __init__(self):
-        smach.State.__init__(self, 
+        smach.State.__init__(self,
                                 outcomes=['running','working1','working2','working3','end'],
                                 input_keys=['rotate_turns_in'],
         )
@@ -176,7 +176,7 @@ class Rotate(smach.State):
 
 class TaskControl(smach.State):
     def __init__(self):
-        smach.State.__init__(self, 
+        smach.State.__init__(self,
                                 outcomes=['end'],
                                 output_keys=['rotate_turns'])
 
@@ -188,7 +188,7 @@ class TaskControl(smach.State):
 class Work1(smach.State):
     def __init__(self):
         self.hsv = None
-        smach.State.__init__(self, 
+        smach.State.__init__(self,
                                 outcomes=['rotate'],
                                 output_keys=['rotate_turns']
         )
@@ -197,19 +197,19 @@ class Work1(smach.State):
         global work, current_work
         move_forward(-0.05)
         self.observe()
-        move_forward(0.05)   
+        move_forward(0.05)
         work = False
         current_work += 1
         userdata.rotate_turns = -1
         time.sleep(0.5)
         return 'rotate'
-    
+
     def observe(self):
         global twist_pub
         cd = ContourDetector()
         image_sub = rospy.Subscriber("camera/rgb/image_raw", Image, self.shape_cam_callback)
         time.sleep(2)
-        
+
         tmp = time.time()
         while True and (time.time() - tmp) < 5:
             _, red_contours1 = cd.getContours(self.hsv, 1)
@@ -226,7 +226,7 @@ class Work1(smach.State):
 class Work2(smach.State):
     def __init__(self):
         self.hsv = None
-        smach.State.__init__(self, 
+        smach.State.__init__(self,
                                 outcomes=['rotate'],
                                 output_keys=['rotate_turns']
         )
@@ -238,7 +238,7 @@ class Work2(smach.State):
         current_work += 1
         userdata.rotate_turns = -2
         return 'rotate'
-    
+
     def observe(self):
         global shape_at_loc2
 
@@ -249,7 +249,7 @@ class Work2(smach.State):
         tmp = time.time()
         while True and (time.time() - tmp) < 5:
             green_contours1, red_contours1 = cd.getContours(self.hsv, 2)
-            if len(red_contours1) > 0:
+            if len(green_contours1) > 0:
                 shape_at_loc2 = green_contours1[0]
                 print "shape at loc2: ", shape_at_loc2
                 signal(len(green_contours1) + len(red_contours1))
@@ -271,11 +271,11 @@ class Work2Follow(smach.State):
         self.w2_Kp = - 2 / 200.0
         self.w2_Kd = 1 / 3000.0
         self.w2_Ki = 0.0
-        smach.State.__init__(self, 
+        smach.State.__init__(self,
                                 outcomes=['arrived', 'returned', 'running'],
                                 output_keys=['rotate_turns']
         )
-        
+
     def execute(self, userdata):
         global twist_pub, current_work, on_additional_line
         time.sleep(1)
@@ -288,7 +288,7 @@ class Work2Follow(smach.State):
             userdata.rotate_turns = 1
             on_additional_line = False
             return 'returned'
-    
+
     def control_speed(self):
         global white_mask, red_mask, g_odom, twist_pub, image_width, current_work
 
@@ -325,11 +325,11 @@ class Work2Follow(smach.State):
 class Work3(smach.State):
     def __init__(self):
         self.hsv = None
-        smach.State.__init__(self, 
+        smach.State.__init__(self,
                                 outcomes=['rotate'],
                                 output_keys=['rotate_turns']
         )
-        
+
     def execute(self, userdata):
         global work, current_work, redline_count_loc3
         redline_count_loc3 += 1
@@ -341,7 +341,7 @@ class Work3(smach.State):
             current_work += 1
         userdata.rotate_turns = -1
         return 'rotate'
-    
+
     def observe(self):
         global current_work, shape_at_loc2, redline_count_loc3, task3_finished
         cd = ContourDetector()
@@ -375,7 +375,7 @@ class SmCore:
         self.sis = smach_ros.IntrospectionServer('server_name', self.sm, '/SM_ROOT')
         self.sis.start()
 
-        with self.sm:   
+        with self.sm:
             smach.StateMachine.add('Wait', Wait(),
                                     transitions={'end': 'end',
                                                 'start': 'Follow'})
@@ -387,7 +387,7 @@ class SmCore:
             smach.StateMachine.add('PassThrough', PassThrough(),
                                     transitions={'running':'PassThrough',
                                                 'end':'Follow',
-                                                'finished':'end'})                    
+                                                'finished':'end'})
             smach.StateMachine.add('Rotate', Rotate(),
                                     transitions={'running':'Rotate',
                                                 'working1': 'Work1',
@@ -403,7 +403,7 @@ class SmCore:
                                     remapping={'rotate_turns':'turns'})
             smach.StateMachine.add('Work2', Work2(),
                                     transitions={'rotate':'Rotate'},
-                                    remapping={'rotate_turns':'turns'}) 
+                                    remapping={'rotate_turns':'turns'})
             smach.StateMachine.add('Work2Follow', Work2Follow(),
                                     transitions={'running':'Work2Follow',
                                                 'arrived':'Work2',
@@ -411,12 +411,12 @@ class SmCore:
                                     remapping={'rotate_turns':'turns'})
             smach.StateMachine.add('Work3', Work3(),
                                     transitions={'rotate':'Rotate'},
-                                    remapping={'rotate_turns':'turns'}) 
-            
-            # Create the sub SMACH state machine 
-            sm_sub_work4 = smach.StateMachine(outcomes=['end', 'returned'], output_keys=['process'], input_keys=['process']) 
-            # Open the container 
-            with sm_sub_work4:        
+                                    remapping={'rotate_turns':'turns'})
+
+            # Create the sub SMACH state machine
+            sm_sub_work4 = smach.StateMachine(outcomes=['end', 'returned'], output_keys=['process'], input_keys=['process'])
+            # Open the container
+            with sm_sub_work4:
                 smach.StateMachine.add('Park', work4.Park(),
                                         transitions={'next':'Park',
                                                     'end':'end',
@@ -455,7 +455,7 @@ class SmCore:
             msg.pose.pose.orientation.z,
             msg.pose.pose.orientation.w,
         ])
-        
+
         g_odom['x'] = x
         g_odom['y'] = y
         g_odom['yaw_z'] = yaw[2]
@@ -516,7 +516,7 @@ class SmCore:
             self.previous_error = err
         else:
             self.cx_white = 0
-        
+
         im2, contours, hierarchy = cv2.findContours(red_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
         if len(contours) > 0:
@@ -576,6 +576,6 @@ twist_pub = rospy.Publisher("/cmd_vel_mux/input/teleop", Twist, queue_size=1)
 led_pub_1 = rospy.Publisher('/mobile_base/commands/led1', Led, queue_size=1)
 led_pub_2 = rospy.Publisher('/mobile_base/commands/led2', Led, queue_size=1)
 sound_pub = rospy.Publisher('/mobile_base/commands/sound', Sound, queue_size=1)
-    
+
 c = SmCore()
 c.execute()
