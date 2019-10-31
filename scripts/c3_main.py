@@ -26,7 +26,6 @@ from sensor_msgs.msg import Joy
 from nav_msgs.srv import SetMap
 from nav_msgs.msg import OccupancyGrid
 
-import detectshapes
 from detectshapes import ContourDetector
 from detectshapes import Contour
 from util import signal, rotate
@@ -54,24 +53,12 @@ class Follow(smach.State):
         smach.State.__init__(self, outcomes=['running', 'end', 'turning'])
 
     def execute(self, userdata):
-        global stop, turn, twist_pub, current_work, g_full_red_line_count
+        global stop, turn, twist_pub, current_work
 
         if turn:
             return 'turning'
         if not stop:
-            if g_full_red_line_count == 2 and False:
-                tmp_time = time.time()
-                while time.time() - tmp_time < 1:
-                    twist_pub.publish(current_twist)
-                twist_pub.publish(Twist())
-                rotate(-45)
-                tmp_time = time.time()
-                while time.time() - tmp_time < 1:
-                    twist_pub.publish(current_twist)
-                twist_pub.publish(Twist())
-                rospy.sleep(10)
-            else:
-                twist_pub.publish(current_twist)
+            twist_pub.publish(current_twist)
             return 'running'
         else:
             twist = Twist()
@@ -86,15 +73,15 @@ class PassThrough(smach.State):
         smach.State.__init__(self, outcomes=['running', 'end', 'finished'])
 
     def execute(self, userdata):
-        global stop, twist_pub, current_work, g_full_red_line_count
+        global stop, twist_pub, current_work, g_red_line_count
         if stop:
             if current_work > 3:
                 return 'finished'
             twist_pub.publish(current_twist)
-            g_full_red_line_count += 1
-            signal(1, onColor=Led.RED)
             return 'running'
         else:
+            g_red_line_count += 1
+            signal(1, Led.RED)
             return 'end'
 
 class Rotate(smach.State):
@@ -280,7 +267,7 @@ class Work2Follow(smach.State):
             twist_pub.publish(Twist())
             if M_red['m00'] > 0 and current_work == 3:
                 print 'saw red'
-                move_forward(0.05)
+                move_forward(0.1)
 
 class Work3(smach.State):
     def __init__(self):
@@ -490,9 +477,8 @@ class SmCore:
                 elif "PassThrough" in self.sm.get_active_states():
                     stop = False
 
-            #cv2.imshow("refer_dot", image)
-            cv2.imshow('red', red_mask)
-            cv2.waitKey(3)
+            # cv2.imshow("refer_dot", image)
+            # cv2.waitKey(3)
             #print stop, turn
     def execute(self):
         begin = time.time()
@@ -508,7 +494,7 @@ turn = False
 work = True
 shape_at_loc2 = None
 redline_count_loc3 = 0
-g_full_red_line_count = 0
+g_red_line_count = 0
 current_work = 1
 on_additional_line = False
 white_mask = None
