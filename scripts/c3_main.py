@@ -89,10 +89,10 @@ class Wait(smach.State):
 
 class Follow(smach.State):
     def __init__(self):
-        smach.State.__init__(self, outcomes=['running', 'end', 'turning', 'work4'])
+        smach.State.__init__(self, outcomes=['running', 'end', 'turning', 'work4'], output_keys=['process'])
 
     def execute(self, userdata):
-        global stop, turn, twist_pub, current_work
+        global stop, turn, twist_pub, current_work, unmarked_spot_id, shape_at_loc2
 
         if turn:
             return 'turning'
@@ -115,6 +115,11 @@ class Follow(smach.State):
                 while time.time() - tmp_time < 2:
                     twist_pub.publish(current_twist)
                 twist_pub.publish(Twist())
+                userdata.process = {
+                                    'spot_id': 1,
+                                    'ARtag_found': False,
+                                    'contour_found': [shape_at_loc2,False],
+                                    'unmarked_spot_id': [unmarked_spot_id,False]}
                 return 'work4'
 
             return 'end'
@@ -426,11 +431,7 @@ class SmCore:
                                     remapping={'rotate_turns':'turns'}) 
             
             # Create the sub SMACH state machine 
-            sm_sub_work4 = smach.StateMachine(outcomes=['end', 'returned']) 
-            sm_sub_work4.userdata.process = {'spot_id': 1,
-                                             'ARtag_found': False,
-                                             'contour_found': False,
-                                             'unmarked_spot_id': [unmarked_spot_id,False]}
+            sm_sub_work4 = smach.StateMachine(outcomes=['end', 'returned'], output_keys=['process'], input_keys=['process']) 
             # Open the container 
             with sm_sub_work4:        
                 smach.StateMachine.add('Park', work4.Park(),

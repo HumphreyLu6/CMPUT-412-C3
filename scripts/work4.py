@@ -43,6 +43,8 @@ class Park(smach.State):
             process = userdata.Park_in_process
             if process['spot_id'] == 1:
                 self.set_init_map_pose()
+            if process['spot_id'] > 8:
+                return 'return'
             waypoint = PARK_SPOT_WAYPOINTS[str(process['spot_id'])]
             goal = util.goal_pose(waypoint, 'map', 'list')
             self.client.send_goal(goal)
@@ -54,20 +56,18 @@ class Park(smach.State):
             elif process['spot_id'] == 5:
                 search_orientation.append(-90)
 
-            self.search(process, search_orientation)
+            process = self.search(process, search_orientation)
             process['spot_id'] += 1
-            if process['spot_id'] > 8:
+            if process['ARtag_found'] and process['contour_found'][1] and process['unmarked_spot_id'][1]:
                 return 'return'
-            else:
-                if process['ARtag_found'] and process['contour_found'] and process['unmarked_spot_id'][1]:
-                    return 'return'
-                return 'next'
+            return 'next'
+
     
     def search(self, process, search_orientation = [0]):
         if process['ARtag_found'] == False:
             ar_sub = rospy.Subscriber("ar_pose_marker", AlvarMarkers, self.ar_callback)
             rospy.wait_for_message("ar_pose_marker", AlvarMarkers)
-        if process['contour_found'] == False:
+        if process['contour_found'][1] == False:
             image_sub = rospy.Subscriber("camera/rgb/image_raw", Image, self.shape_cam_callback)
             rospy.wait_for_message("camera/rgb/image_raw", Image)
         
@@ -78,11 +78,11 @@ class Park(smach.State):
                 util.signal(1, onColor=Led.GREEN)
                 process['ARtag_found'] = True
 
-            if process['contour_found'] == False and self.search_contour():
+            if process['contour_found'][1] == False and self.search_contour(process):
                 util.signal(1, onColor=Led.ORANGE)
-                process['contour_found'] = True
+                process['contour_found'][1] = True
 
-            if process['ARtag_found'] and process['contour_found']:
+            if process['ARtag_found'] and process['contour_found'][1]:
                 break
 
         #unregister
@@ -90,6 +90,7 @@ class Park(smach.State):
         if process['spot_id'] == process['unmarked_spot_id'][0]:
             util.signal(1, onColor=Led.RED)
             process['unmarked_spot_id'][1] = True
+        return process
     
     def search_ARtag(self):
         if len(self.tags) != 0:
@@ -97,11 +98,12 @@ class Park(smach.State):
             return True
         return False
     
-    def search_contour(self):
+    def search_contour(self, process):
         cd = detectshapes.ContourDetector()
         _, red_contours = cd.getContours(self.hsv)
         if len(red_contours) > 0:
-            return True
+            if red_contours[0] == process['contour_found'][0]:
+                return True
         return False
 
     def ar_callback(self, msg):
@@ -164,8 +166,9 @@ if __name__ == "__main__":
     sm = smach.StateMachine(outcomes=['end'])
     sm.userdata.process = {'spot_id': 1,
                             'ARtag_found': False,
-                            'contour_found': False,
-                            'unmarked_spot_id': [8,False]}
+                            'contour_found': [None,False],
+                            'unmarked_spot_id': [8,False]
+                            }
 
     with sm:        
         smach.StateMachine.add('Park', Park(),
@@ -177,7 +180,7 @@ if __name__ == "__main__":
                                            'Park_in_process':'process'})
         smach.StateMachine.add('ON_RAMP', ON_RAMP(),
                                 transitions={'end':'end',
-                                             'returned':'end'})
+                                             'returned':'returned'})
     
     outcome = sm.execute()
     rospy.spin()
