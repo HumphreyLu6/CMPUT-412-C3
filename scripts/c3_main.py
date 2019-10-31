@@ -26,6 +26,7 @@ from sensor_msgs.msg import Joy
 from nav_msgs.srv import SetMap
 from nav_msgs.msg import OccupancyGrid
 
+import detectshapes
 from detectshapes import ContourDetector
 from detectshapes import Contour
 from util import signal, rotate
@@ -58,7 +59,7 @@ class Follow(smach.State):
         if turn:
             return 'turning'
         if not stop:
-            if g_full_red_line_count == 2:
+            if g_full_red_line_count == 2 and False:
                 tmp_time = time.time()
                 while time.time() - tmp_time < 1:
                     twist_pub.publish(current_twist)
@@ -279,7 +280,7 @@ class Work2Follow(smach.State):
             twist_pub.publish(Twist())
             if M_red['m00'] > 0 and current_work == 3:
                 print 'saw red'
-                move_forward(0.1)
+                move_forward(0.05)
 
 class Work3(smach.State):
     def __init__(self):
@@ -489,8 +490,9 @@ class SmCore:
                 elif "PassThrough" in self.sm.get_active_states():
                     stop = False
 
-            # cv2.imshow("refer_dot", image)
-            # cv2.waitKey(3)
+            #cv2.imshow("refer_dot", image)
+            cv2.imshow('red', red_mask)
+            cv2.waitKey(3)
             #print stop, turn
     def execute(self):
         begin = time.time()
