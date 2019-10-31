@@ -61,9 +61,21 @@ class Follow(smach.State):
             twist_pub.publish(current_twist)
             return 'running'
         else:
-            twist = Twist()
-            twist_pub.publish(twist)
-            rospy.sleep(0.5)
+            if g_red_line_count == 2 and False:
+                tmp_time = time.time()
+                while time.time() - tmp_time < 1:
+                    twist_pub.publish(current_twist)
+                twist_pub.publish(Twist())
+                rotate(-45)
+                tmp_time = time.time()
+                while time.time() - tmp_time < 1:
+                    twist_pub.publish(current_twist)
+                twist_pub.publish(Twist())
+                rospy.sleep(10)
+            else:
+                twist = Twist()
+                twist_pub.publish(twist)
+                rospy.sleep(0.5)
             return 'end'
         
                 
