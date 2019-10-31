@@ -98,7 +98,7 @@ To signal that the robot have parked use the leds and make a sound:
 -   Based on the experience we collected from demo4 and demo5, we casrefully develop the map using view_nevigation package. After we save the map base on the sensors, we polish the map with image editoring tools to reduce the error on the map.
 - After a fairly accurate map is established, we set the way points based on the map. By testing out each waypoint one by one, we want to make sure the run time error genreate by the odem has the minimum effect on the final parking spot.
 -  Since the usb camera is stilling running during parking into these red squares, it is likely that the robot takes the parking red square as the functional red lines. New global varibies have set to avoid these conflicts.
-- 
+- We use exhaust search for the parking spot to make sure the robot complete the task and fit into all the squares.
 
 #### Sources
 - https://github.com/jackykc/comp5
