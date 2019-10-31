@@ -93,6 +93,7 @@ class Follow(smach.State):
 
     def execute(self, userdata):
         global stop, turn, twist_pub, current_work, unmarked_spot_id, shape_at_loc2, g_red_line_count, work4_returned
+        
         if work4_returned and turn:
             turn = False
             work4_returned = False
@@ -208,19 +209,14 @@ class Work1(smach.State):
         cd = ContourDetector()
         image_sub = rospy.Subscriber("camera/rgb/image_raw", Image, self.shape_cam_callback)
         time.sleep(2)
-        _, red_contours1 = cd.getContours(self.hsv, 1)
-        print "numer of objects:", len(red_contours1)
-        signal(len(red_contours1),onColor=Led.ORANGE)
-        # for i in range(2):
-        #     if self.hsv != None:
-        #         _, red_contours1 = cd.getContours(self.hsv, 1)
-        #         rospy.sleep(1)
-        #         _, red_contours2 = cd.getContours(self.hsv, 1)
-        #         print "round ", i, "length1 ", len(red_contours1), "length2 ", len(red_contours2)
-        #         if len(red_contours1) == len(red_contours2):
-        #             print "numer of objects:", len(red_contours1)
-        #             signal(len(red_contours1),onColor=Led.ORANGE)
-        #             break
+        
+        tmp = time.time()
+        while True and (time.time() - tmp) < 5:
+            _, red_contours1 = cd.getContours(self.hsv, 1)
+            if len(red_contours1) > 0:
+                print "numer of objects:", len(red_contours1)
+                signal(len(red_contours1),onColor=Led.ORANGE)
+                break
 
     def shape_cam_callback(self, msg):
         bridge = cv_bridge.CvBridge()
@@ -249,22 +245,16 @@ class Work2(smach.State):
         cd = ContourDetector()
         image_sub = rospy.Subscriber("camera/rgb/image_raw", Image, self.shape_cam_callback)
         time.sleep(1)
-        green_contours1, red_contours1 = cd.getContours(self.hsv, 2)
-        signal(len(green_contours1) + len(red_contours1))
-        shape_at_loc2 = green_contours1[0]
-        print "shape at loc2: ", shape_at_loc2
-        # for i in range(2):
-        #     if self.hsv != None:
-        #         green_contours1, red_contours1 = cd.getContours(self.hsv, 2)
-        #         rospy.sleep(1)
-        #         green_contours2, red_contours2 = cd.getContours(self.hsv, 2)
-        #         print "round ", i, "length1: ", (len(green_contours1) + len(red_contours1)), "length2: ", (len(green_contours2) + len(red_contours2))
-        #         if len(green_contours1) == len(green_contours2) and len(red_contours1) == len(red_contours2):
-        #             print "green contours:", len(green_contours1), "red_contours:", len(red_contours1)
-        #             signal(len(green_contours1) + len(red_contours1))
-        #             shape_at_loc2 = green_contours1[0]
-        #             print "shape at loc2: ", shape_at_loc2
-        #             break
+
+        tmp = time.time()
+        while True and (time.time() - tmp) < 5:
+            green_contours1, red_contours1 = cd.getContours(self.hsv, 2)
+            if len(red_contours1) > 0:
+                shape_at_loc2 = green_contours1[0]
+                print "shape at loc2: ", shape_at_loc2
+                signal(len(green_contours1) + len(red_contours1))
+                break
+            time.sleep(0.5)
 
     def shape_cam_callback(self, msg):
         bridge = cv_bridge.CvBridge()
@@ -357,29 +347,18 @@ class Work3(smach.State):
         cd = ContourDetector()
         image_sub = rospy.Subscriber("camera/rgb/image_raw", Image, self.shape_cam_callback)
         time.sleep(1)
-        _, red_contours1 = cd.getContours(self.hsv, 3, redline_count_loc3)
-        if red_contours1[0] == shape_at_loc2:
-            print "Matched: ", red_contours1[0]
-            signal(1)
-            task3_finished = True
-        # for i in range(2):
-        #     if self.hsv != None:
-        #         _, red_contours1 = cd.getContours(self.hsv, 3, redline_count_loc3)
-        #         rospy.sleep(1)
-        #         _, red_contours2 = cd.getContours(self.hsv, 3, redline_count_loc3)
-        #         print "round ", i, "length1 ", len(red_contours1), "length2 ", len(red_contours2)
-        #         if len(red_contours1) == len(red_contours2) and len(red_contours1) > 0:
-        #             if red_contours1[0] == red_contours2[0]:
-        #                 if red_contours1[0] == shape_at_loc2:
-        #                     print "Matched: ", red_contours1[0]
-        #                     signal(1)
-        #                     task3_finished = True
-        #                     break
-        #                 else:
-        #                     print("Found but not matched: ", red_contours1[0])
-        #                     break
+        tmp = time.time()
+        while True and (time.time() - tmp) < 5:
+            _, red_contours1 = cd.getContours(self.hsv, 3, redline_count_loc3)
+            if len(red_contours1) > 0:
+                if red_contours1[0] == shape_at_loc2:
+                    print "Matched: ", red_contours1[0]
+                    signal(1)
+                    task3_finished = True
+                break
+            time.sleep(0.5)
 
-        image_sub.unregister()
+        #image_sub.unregister()
 
     def shape_cam_callback(self, msg):
         bridge = cv_bridge.CvBridge()
