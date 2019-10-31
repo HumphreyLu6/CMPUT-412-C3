@@ -136,7 +136,7 @@ if __name__ == "__main__":
     sm.userdata.process = {'spot_id': 1,
                             'ARtag_found': False,
                             'contour_found': False,
-                            'unmarked_spot_id': (4,False)}
+                            'unmarked_spot_id': [4,False]}
 
     with sm:        
         smach.StateMachine.add('Park', Park(),
@@ -145,7 +145,7 @@ if __name__ == "__main__":
                                             'return':'ON_RAMP'
                                             },
                                 remapping={'Park_in_process':'process',
-                                           'Park_out_process':'process'})
+                                           'Park_in_process':'process'})
         smach.StateMachine.add('ON_RAMP', ON_RAMP(),
                                 transitions={'end':'end',
                                              'returned':'end'})

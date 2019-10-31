@@ -30,6 +30,8 @@ from detectshapes import ContourDetector
 from detectshapes import Contour
 from util import signal, rotate
 
+import work4
+
 
 def approxEqual(a, b, tol = 0.001):
     return abs(a - b) <= tol
@@ -47,10 +49,47 @@ def move_forward(meters):
         if abs(ori_x - g_odom['x']) > abs(meters) or abs(ori_y - g_odom['y']) > abs(meters):
             break
 
+class Wait(smach.State):
+    def __init__(self):
+        smach.State.__init__(self, outcomes=['start', 'end'])
+
+    def execute(self, userdata):
+        global g_start, unmarked_spot_id
+        
+        joy_sub = rospy.Subscriber("joy", Joy, self.joy_callback)
+        while not rospy.is_shutdown():
+            if g_start and unmarked_spot_id != None:
+                joy_sub.unregister()
+                return 'start'
+        joy_sub.unregister()
+        return 'end'
+    
+    def joy_callback(self, msg):
+        global unmarked_spot_id, g_start
+        if msg.buttons[0] == 1: #X
+            unmarked_spot_id = 1
+        if msg.buttons[1] == 1: #A
+            unmarked_spot_id = 2
+        if msg.buttons[2] == 1: #B
+            unmarked_spot_id = 3
+        if msg.buttons[3] == 1: #Y
+            unmarked_spot_id = 4
+        if msg.buttons[4] == 1: #LB
+            unmarked_spot_id = 5
+        if msg.buttons[5] == 1: #RB
+            unmarked_spot_id = 6
+        if msg.buttons[6] == 1: #LT
+            unmarked_spot_id = 7
+        if msg.buttons[7] == 1: #RT
+            unmarked_spot_id = 8
+        if msg.buttons[9] == 1: #start
+            g_start = True
+
+        print unmarked_spot_id, g_start
 
 class Follow(smach.State):
     def __init__(self):
-        smach.State.__init__(self, outcomes=['running', 'end', 'turning'])
+        smach.State.__init__(self, outcomes=['running', 'end', 'turning', 'work4'])
 
     def execute(self, userdata):
         global stop, turn, twist_pub, current_work
@@ -61,21 +100,23 @@ class Follow(smach.State):
             twist_pub.publish(current_twist)
             return 'running'
         else:
-            if g_red_line_count == 2 and False:
+            twist = Twist()
+            twist_pub.publish(twist)
+            rospy.sleep(0.5)
+
+            #off ramp
+            if g_red_line_count == 2:# or True:
                 tmp_time = time.time()
-                while time.time() - tmp_time < 1:
+                while time.time() - tmp_time < 2:
                     twist_pub.publish(current_twist)
                 twist_pub.publish(Twist())
                 rotate(-45)
                 tmp_time = time.time()
-                while time.time() - tmp_time < 1:
+                while time.time() - tmp_time < 2:
                     twist_pub.publish(current_twist)
                 twist_pub.publish(Twist())
-                rospy.sleep(10)
-            else:
-                twist = Twist()
-                twist_pub.publish(twist)
-                rospy.sleep(0.5)
+                return 'work4'
+
             return 'end'
         
                 
@@ -93,7 +134,7 @@ class PassThrough(smach.State):
             return 'running'
         else:
             g_red_line_count += 1
-            signal(1, Led.RED)
+            #signal(1, Led.RED)
             return 'end'
 
 class Rotate(smach.State):
@@ -105,7 +146,8 @@ class Rotate(smach.State):
 
     def execute(self, userdata):
         global g_odom, turn, work, current_work, twist_pub, on_additional_line
-        rotate(userdata.rotate_turns_in * 90, anglular_scale=1.0)
+        #rotate(userdata.rotate_turns_in * 90, anglular_scale=1.0)
+        rotate(userdata.rotate_turns_in * 88, anglular_scale=1.0)
         turn = False
         if work:
             if current_work == 1:
@@ -337,18 +379,23 @@ class Work3(smach.State):
 
 class SmCore:
     def __init__(self):
+        global unmarked_spot_id
         self.sm = smach.StateMachine(outcomes=['end'])
         #self.sm.userdata.turn = 0
         self.sm.userdata.turns = 0
-        self.sis = smach_ros.IntrospectionServer('server_name', self.sm, '/SM_ROOT')
 
+        self.sis = smach_ros.IntrospectionServer('server_name', self.sm, '/SM_ROOT')
         self.sis.start()
+
         with self.sm:   
+            smach.StateMachine.add('Wait', Wait(),
+                                    transitions={'end': 'end',
+                                                'start': 'Follow'})
             smach.StateMachine.add('Follow', Follow(),
                                     transitions={'running':'Follow',
                                                 'end':'PassThrough',
-                                                'turning':'TaskControl'
-                                                })
+                                                'turning':'TaskControl',
+                                                'work4': 'SM_SUB_Work4'})
             smach.StateMachine.add('PassThrough', PassThrough(),
                                     transitions={'running':'PassThrough',
                                                 'end':'Follow',
@@ -376,7 +423,29 @@ class SmCore:
                                     remapping={'rotate_turns':'turns'})
             smach.StateMachine.add('Work3', Work3(),
                                     transitions={'rotate':'Rotate'},
-                                    remapping={'rotate_turns':'turns'})   
+                                    remapping={'rotate_turns':'turns'}) 
+            
+            # Create the sub SMACH state machine 
+            sm_sub_work4 = smach.StateMachine(outcomes=['end', 'returned']) 
+            sm_sub_work4.userdata.process = {'spot_id': 1,
+                                             'ARtag_found': False,
+                                             'contour_found': False,
+                                             'unmarked_spot_id': [unmarked_spot_id,False]}
+            # Open the container 
+            with sm_sub_work4:        
+                smach.StateMachine.add('Park', work4.Park(),
+                                        transitions={'next':'Park',
+                                                    'end':'end',
+                                                    'return':'ON_RAMP'
+                                                    },
+                                        remapping={'Park_in_process':'process',
+                                                   'Park_in_process':'process'})
+                smach.StateMachine.add('ON_RAMP', work4.ON_RAMP(),
+                                        transitions={'end':'end',
+                                                    'returned':'returned'})
+            smach.StateMachine.add("SM_SUB_Work4", sm_sub_work4,
+                                    transitions={'end':'end',
+                                                'returned':'Follow'})
 
             self.bridge = cv_bridge.CvBridge()
 
@@ -489,8 +558,8 @@ class SmCore:
                 elif "PassThrough" in self.sm.get_active_states():
                     stop = False
 
-            # cv2.imshow("refer_dot", image)
-            # cv2.waitKey(3)
+            cv2.imshow("refer_dot", image)
+            cv2.waitKey(3)
             #print stop, turn
     def execute(self):
         begin = time.time()
@@ -514,6 +583,8 @@ red_mask = None
 task3_finished = False
 image_width = 0
 g_odom = {'x':0.0, 'y':0.0, 'yaw_z':0.0}
+g_start = False
+unmarked_spot_id = None
 
 rospy.init_node('c2_main')
 
