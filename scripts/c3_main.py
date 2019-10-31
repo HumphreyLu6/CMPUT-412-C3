@@ -105,7 +105,7 @@ class Follow(smach.State):
             rospy.sleep(0.5)
 
             #off ramp
-            if g_red_line_count == 2 or True:
+            if g_red_line_count == 2:# or True:
                 tmp_time = time.time()
                 while time.time() - tmp_time < 2:
                     twist_pub.publish(current_twist)

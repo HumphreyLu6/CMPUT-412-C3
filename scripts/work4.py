@@ -47,7 +47,7 @@ class Park(smach.State):
             goal = util.goal_pose(waypoint, 'map', 'list')
             self.client.send_goal(goal)
             self.client.wait_for_result()
-            #util.signal(3) #debug
+            #util.signal(process['spot_id'], onColor=Led.BLACK) #debug
             search_orientation = [0]
             if process['spot_id'] == 1:
                 search_orientation.append(90)

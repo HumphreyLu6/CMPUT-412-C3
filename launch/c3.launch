@@ -8,7 +8,7 @@
         <arg name="map_file" value = "/home/humphrey/Documents/catkin_ws/src/c3/map.yaml"/>
     </include>
     
-    <include file="$(find turtlebot_rviz_launchers)/launch/view_navigation.launch"/>
+    <!-- <include file="$(find turtlebot_rviz_launchers)/launch/view_navigation.launch"/> -->
 
     <arg name="marker_size" default="19.9" />
     <arg name="max_new_marker_error" default="0.08" />
