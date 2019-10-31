@@ -115,7 +115,7 @@ class Follow(smach.State):
                 while time.time() - tmp_time < 2:
                     twist_pub.publish(current_twist)
                 twist_pub.publish(Twist())
-                rotate(-30)
+                rotate(-35)
                 tmp_time = time.time()
                 while time.time() - tmp_time < 2:
                     twist_pub.publish(current_twist)
@@ -157,7 +157,7 @@ class Rotate(smach.State):
     def execute(self, userdata):
         global g_odom, turn, work, current_work, twist_pub, on_additional_line
         #rotate(userdata.rotate_turns_in * 90, anglular_scale=1.0)
-        rotate(userdata.rotate_turns_in * 88, anglular_scale=1.0)
+        rotate(userdata.rotate_turns_in * 85, anglular_scale=1.0)
         turn = False
         if work:
             if current_work == 1:
