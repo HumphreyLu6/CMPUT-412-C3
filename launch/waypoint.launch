@@ -3,6 +3,7 @@
     <include file="$(find turtlebot_teleop)/launch/logitech.launch"/>
     <include file="$(find turtlebot_navigation)/launch/amcl_demo.launch">
         <arg name="map_file" value = "/home/hzhang/map.yaml"/>
+        <!--arg name="map_file" value = "/home/humphrey/Documents/catkin_ws/src/c3/map.yaml"/-->
     </include>
     <param name="/move_base/global_costmap/inflation_layer/inflation_radius" value="0.07"/>
     <param name="/move_base/local_costmap/inflation_layer/inflation_radius" value="0.07"/>
