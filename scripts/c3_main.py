@@ -68,7 +68,7 @@ class Follow(smach.State):
                 while time.time() - tmp_time < 1:
                     twist_pub.publish(current_twist)
                 twist_pub.publish(Twist())
-                return 'end'
+                rospy.sleep(10)
             else:
                 twist_pub.publish(current_twist)
             return 'running'
@@ -85,11 +85,13 @@ class PassThrough(smach.State):
         smach.State.__init__(self, outcomes=['running', 'end', 'finished'])
 
     def execute(self, userdata):
-        global stop, twist_pub, current_work
+        global stop, twist_pub, current_work, g_full_red_line_count
         if stop:
             if current_work > 3:
                 return 'finished'
             twist_pub.publish(current_twist)
+            g_full_red_line_count += 1
+            signal(1, onColor=Led.RED)
             return 'running'
         else:
             return 'end'
@@ -406,7 +408,7 @@ class SmCore:
         g_odom['yaw_z'] = yaw[2]
 
     def usb_image_callback(self, msg):
-        global stop, turn, current_work, white_mask, red_mask, image_width, g_full_red_line_count
+        global stop, turn, current_work, white_mask, red_mask, image_width
 
         full_red_line = False
 
@@ -478,7 +480,6 @@ class SmCore:
                     radius = int(radius)
                     cv2.circle(image, center, radius, (0, 255, 0), 2)
                     if self.cx_white == 0: #full red line
-                        g_full_red_line_count += 1
                         full_red_line = True
                         stop = True
                     elif x + radius < self.cx_white: #half red line
