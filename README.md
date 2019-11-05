@@ -74,12 +74,10 @@ To signal that the robot have parked use the leds and make a sound:
         - 2. If the robot hit a long red line it will enter the PassThrough state to perform a stop at the long red line
         - 3. If the robot hit a short red line it will enter the TaskControl state to determine how many 90 degrees it should trun and then it goes into Rotate state which controls the robot's rotation based on the yaw value.
         - 4. In the Rotate state, the robot will determine what kind of work it will do based on current value.
-        - 5. For the task to count number of white tubes, the robot will detect how many red/green contours are in the front and indicate the number by Led lights and sound.
-        - 6. The robot remembres what shape the green contour is in location 
-        - (New)
-        - 7. The robot goes 'off ramp' points to park at the center of the square right in front of the AR tag.
-        - 8. The robot parks in the center of the specific square determined by the joy stick
-        - 9. After the robot finishs all parking task it will go to the 'on ramp' point and continue the ''lcoation 3' task in competition 2. 
+        - 5. For the task to count number of white tubes, the robot will detect how many red contours are in the front and indicate the number by Led lights and sound.
+        - 6. For the task at location 2, the robot will detect how many red/green contours are in the front and indicate the total number by Led lights and sound, the robot will remember what shape the green contour is in location2.
+        - 7. The robot goes 'off ramp' to dock at three locations, one has a the AR tag in the front, one has a contour with same shape in location 2 in the front, one has the index specified in the biginning of the game. The robot will parks in the center of the each square/location.
+        - 9. After the robot finishs all parking task it will go to the 'on ramp' point and continue the 'lcoation 3' task, which is find the matching shape at location 2. 
         - 10. The robot will go through all the shapes when selecting the shapes. If it found the right one it will make a turn on a light and make a sound.
         - 11. The run is ended when the robot is back to the starting line 
 
@@ -90,13 +88,14 @@ To signal that the robot have parked use the leds and make a sound:
 -    If the object cannot be included into the camera, the robot can back up a little bit to fit the camera view into the right position.
 -    Used cv2.pyrMeanShiftFiltering to blur image when detect contours' shapes, but this caused lag.
 -    To ensure shape detect result is correct, we detect twice with a few seconds gap to check if results are the same.
-- (NEW)
--   The code file for work4 is seperate from the main code for further improvement on the coding style.
--   Heavliy used simple task functions like rotation has been seperated from the original file to increase simplicity.
--   Based on the experience we collected from demo4 and demo5, we casrefully develop the map using view_nevigation package. After we save the map base on the sensors, we polish the map with image editoring tools to reduce the error on the map.
-- After a fairly accurate map is established, we set the way points based on the map. By testing out each waypoint one by one, we want to make sure the run time error genreate by the odem has the minimum effect on the final parking spot.
--  Since the usb camera is stilling running during parking into these red squares, it is likely that the robot takes the parking red square as the functional red lines. New global varibies have set to avoid these conflicts.
-- We use exhaust search for the parking spot to make sure the robot complete the task and fit into all the squares.
+-    The code file for work4 is seperate from the main code for further improvement on the coding style.
+-    Heavliy used simple task functions like rotation has been seperated from the original file to increase simplicity.
+-    Based on the experience we collected from demo4 and demo5, we carefully develop the map using view_nevigation package.
+-    After a fairly accurate map is established, we set the way points based on the map. By testing out each waypoint one by one, we want to make sure the run time error genreate by the odem has the minimum effect on the final parking spot.
+-    Since the usb camera is stilling running during parking into these red squares, it is likely that the robot takes the parking red square as the functional red lines. New global varibies have set to avoid these conflicts.
+-    We used exhaustive search for the parking spot to make sure the robot complete the task and fit into all the squares.
+-    Set initial pose when the robot is off ramp instead of the start point of the game.
+-    To improve the runtime performance, we choose to not launch rviz, this can be enabled through commenting out lines in launch file.
 
 #### Sources
 - https://github.com/jackykc/comp5
