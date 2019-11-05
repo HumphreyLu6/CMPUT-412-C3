@@ -66,8 +66,8 @@ To signal that the robot have parked use the leds and make a sound:
 ## _**Process and Strategy**_
 -    Our basic strategy includes using pid controller to follow lines, using opencv contour shape detection to detect shapes, using amcl to do localization, using move_base to reach goal point in the location 4.
 -    Here are the process details:
--    Firstly, the robot will initilize the inital yam value for the whole run and approaching the first red line as it following the white line.
--    As the robot is running, it will find out whether there is a red long line(which means stop) or a red short line(which means detecting the image)
+-    Firstly, the robot will start with "Wait" state, once the user send unmarked dock point number and start signal, the robot will start follow the white line.
+-    As the robot is running, it will find out whether there is a red long line(which means stop) or a red short line(which means detecting the image) and decide if it needs to switch states.
 -    For different working tasks, the difference is based on the global variable of "current_work"
 -    The state machine will have some kind of work flow like this:
         - 1. Following state will keep the robot following the white line
