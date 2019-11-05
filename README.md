@@ -35,11 +35,10 @@ To signal that the robot have parked use the leds and make a sound:
         
     -   Smach  [http://wiki.ros.org/smach](http://wiki.ros.org/smach)
         
-        The source code of the project can be found at
-       [https://github.com/TianqiCS/CMPUT412-C2]
-       [https://github.com/TianqiCS/CMPUT412-C1]  
-       [https://github.com/HumphreyLu6/CMPUT-412-C3]
-       Create or navigate the existing catkin workspace and clone our repository.
+This project is built upon
+[https://github.com/TianqiCS/CMPUT412-C2]
+[https://github.com/TianqiCS/CMPUT412-C1]  
+Create or navigate the existing catkin workspace and clone our repository.
        
 
 ## _**Execution**_
