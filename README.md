@@ -17,7 +17,7 @@ Location 1: The first object counting location is located 90 degrees CCW from th
 
 Location 3: The final challenge is to determine the shape of the green object at Location 2 (circle, square, or triangle) and find its matching shape at one of three possible positions at Location 3, on the second half of the course. The shapes at Location 3 will be red. When the robot find the matching object shape it must make a sound to signal the shape has been found. The robot must be facing the matching shape so that judges know which one has been picked.
 
-(NEW) Location 4: There are eight parking spots taped on the floor. The robot will have to park at the correct spot to receive points. In all cases, the robot must be inside the 55cm x 55cm parking spot. One task will be parking by an ARtag. Another task will be parking at an unlabeled parking spot (still marked with tape, but no ARtag) that will be specified at the start of the run (The robot MUST enter the parking spot number using the logitech controller). The final task will be to park at the Green shape that the robot identified at Location 2 (three spots will be marked by shapes: circle, square, or triangle). 
+Location 4: There are eight parking spots taped on the floor. The robot will have to park at the correct spot to receive points. In all cases, the robot must be inside the 55cm x 55cm parking spot. One task will be parking by an ARtag. Another task will be parking at an unlabeled parking spot (still marked with tape, but no ARtag) that will be specified at the start of the run (The robot MUST enter the parking spot number using the logitech controller). The final task will be to park at the Green shape that the robot identified at Location 2 (three spots will be marked by shapes: circle, square, or triangle). 
 To signal that the robot have parked use the leds and make a sound: 
 - ARTag - turn led green 
 - - Shape - turn led orange
@@ -44,7 +44,7 @@ To signal that the robot have parked use the leds and make a sound:
 
 ## _**Execution**_
 
--   Once you have the package in your workspace
+-   Once you have the package in your workspace, change the package name to c3
     
     ```
     cd (your path)/catkin_ws
@@ -52,23 +52,21 @@ To signal that the robot have parked use the leds and make a sound:
     source devel/setup.bash
     
     ```
-  remove the folder to c2
     now you can launch the program using
     
-    
-    $roslaunch c3 c3_main.launch
-    
+    ```
+    roslaunch c3 c3_main.launch
+    ```
     
 -   arguments and parameters In the launch file c3.launch, the file will launch basic driver for the kuboki robot which is essential for the competition ( minimal.launch and 3dsensor.launch). Next, the file will bring up the basic node for this competition like main file and a usb camera. Finally, there are different sections for in the launch file like example.yaml to give the uvc camera  a basic understanding of view.
  
-(New)
--  A map file of the lab is added to the file folder which is used for work4(the new location).   In the c3.launch file, the ar_track_alvar is used to regonize the AR tag. We comment out the view_nevigation package to increase the performance of the robot.
+-  A map file of the lab is added to the file folder which is used for work4(the new location).   In the c3.launch file, the ar_track_alvar is used to regonize the AR tag. We comment out the view_nevigation package to increase the performance of the robot at runtime.
 
 
-## _**Concepts and Strategy**_
--    our basic strategy is using pid controller to follow lines and opencv contour shape detection to detect shapes, referenced from https://www.pyimagesearch.com/2016/02/08/opencv-shape-detection/ and https://github.com/TianqiCS/CMPUT-412-Demo3
--    Here are the details:
--    Firstlly, the robot will initilize the inital yam value for the whole run and approaching the first red line as it following the white line.
+## _**Process and Strategy**_
+-    Our basic strategy includes using pid controller to follow lines, using opencv contour shape detection to detect shapes, using amcl to do localization, using move_base to reach goal point in the location 4.
+-    Here are the process details:
+-    Firstly, the robot will initilize the inital yam value for the whole run and approaching the first red line as it following the white line.
 -    As the robot is running, it will find out whether there is a red long line(which means stop) or a red short line(which means detecting the image)
 -    For different working tasks, the difference is based on the global variable of "current_work"
 -    The state machine will have some kind of work flow like this:
@@ -109,3 +107,6 @@ To signal that the robot have parked use the leds and make a sound:
 - https://www.pyimagesearch.com/2016/02/08/opencv-shape-detection/
 - https://github.com/TianqiCS/CMPUT-412-C2
 - https://github.com/HumphreyLu6/CMPUT412_demo5_p2
+- https://www.cnblogs.com/kuangxionghui/p/8335853.html
+- https://www.pyimagesearch.com/2016/02/08/opencv-shape-detection/
+- https://github.com/TianqiCS/CMPUT-412-C2
