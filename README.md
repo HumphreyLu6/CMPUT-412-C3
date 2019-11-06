@@ -80,6 +80,8 @@ Create or navigate the existing catkin workspace and clone our repository.
         - 10. The robot will go through all the shapes when selecting the shapes. If it found the right one it will make a turn on a light and make a sound.
         - 11. The run is ended when the robot is back to the starting line 
 
+![Fig1](smach.png)
+
 
 #### Notes:
 -    We put additional usb camera at the front of the turtle_bot to follow the white line on the ground and the asus camera is used to detect shape of the target.
