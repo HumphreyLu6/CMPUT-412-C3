@@ -97,6 +97,8 @@ Create or navigate the existing catkin workspace and clone our repository.
 -    We used exhaustive search for the parking spot to make sure the robot complete the task and fit into all the squares.
 -    Set initial pose when the robot is off ramp instead of the start point of the game.
 -    To improve the runtime performance, we choose to not launch rviz, this can be enabled through commenting out lines in launch file.
+-    The algorithm to detect shape is from https://www.pyimagesearch.com/2016/02/08/opencv-shape-detection/, we first transfer the image into black and white then find contours in our binary image. Lastly, we draw the contours and the labeled shape on our image
+-    The docking process is based on waypoints. We test the waypoints one by one to ensure the the robot will dock on point.
 
 #### Sources
 - https://github.com/jackykc/comp5
