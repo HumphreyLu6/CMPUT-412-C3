@@ -18,24 +18,24 @@ In general, the robot needs to follow a track and do different specific taks at 
     <img src="https://github.com/HumphreyLu6/CMPUT-412-C3/blob/master/images%20and%20video/course.png" width="80%" height="80%">
 </p>
 
-- ***location 1*** is the first location maked by a short red line. Certain number (1~3) of objects are placed 90 degrees counterclockwise from the line. The robot needs to count the number of objects without leaving the track.
+- ***Location 1*** is the first location maked by a short red line. Certain number (1~3) of objects are placed 90 degrees counterclockwise from the line. The robot needs to count the number of objects without leaving the track.
 <p align = "center">
 <img src="https://github.com/HumphreyLu6/CMPUT-412-C3/blob/master/images%20and%20video/location1.png" width="40%" height="40%">
 </p>
 
-- ***location 2*** is the second location, which located in the end of an additional track which branched off at a short red line. A white board with certain number(1~3) of shapes is placed at location 2, one of the shape is in green and others are in red. The robot needs to count the number of shapes and detect what shape the the green shape is.
+- ***Location 2*** is the second location, which located in the end of an additional track which branched off at a short red line. A white board with certain number(1~3) of shapes is placed at location 2, one of the shape is in green and others are in red. The robot needs to count the number of shapes and detect what shape the the green shape is.
 
 <p align = "center">
 <img src="https://github.com/HumphreyLu6/CMPUT-412-C3/blob/master/images%20and%20video/location2.png" width="40%" height="40%">
 </p>
 
-- ***location 4*** is the third location led by a off ramp track. 8 parking spots are located on the floor which are represented by red squares. The robot needs to dock at three specific spots. One spot has a AR tag places in the front, one spot has a red shape in the front, the shape is same as the green shape at location 2, the thrid spot is specified at the beginning of the competition. The robot need to park inside of the red square to get the full mark. After finishing parking at three spots, the robot needs to find the on ramp location and keep following the track.
+- ***Location 4*** is the third location led by a off ramp track. 8 parking spots are located on the floor which are represented by red squares. The robot needs to dock at three specific spots. One spot has a AR tag places in the front, one spot has a red shape in the front, the shape is same as the green shape at location 2, the thrid spot is specified at the beginning of the competition. The robot need to park inside of the red square to get the full mark. After finishing parking at three spots, the robot needs to find the on ramp location and keep following the track.
 
 <p align = "center">
 <img src="https://github.com/HumphreyLu6/CMPUT-412-C3/blob/master/images%20and%20video/location4.png" width="40%" height="40%">
 </p>
 
-- ***location 3*** is the last location which is marked by three hald red lines, each red line indicated there is a shape located counterclockwise from the track, the robot needs to find the one with same shape as the green shape at location 2.
+- ***Location 3*** is the last location which is marked by three hald red lines, each red line indicated there is a shape located counterclockwise from the track, the robot needs to find the one with same shape as the green shape at location 2.
 
 <p align = "center">
 <img src="https://github.com/HumphreyLu6/CMPUT-412-C3/blob/master/images%20and%20video/location3.png" width="40%" height="40%">
