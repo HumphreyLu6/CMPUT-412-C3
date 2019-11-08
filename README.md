@@ -1,7 +1,14 @@
 ﻿# CMPUT412 FALL 2019 - competition three report
 _**Purpose**_
 
-The third competition is based on the second competition. Besides the original tasks, there are three more tasks: 1. Parking at the right AR tag. 2. Parking at the right shape that has been identified. 3. Parking at the specific square as asked. The additional task is held between original task two and task three where there is an off-ramp point, there will be no more white line on the ground. The robot will be navigating by itself without following the line. There are red squares outlined as parking spots for the robots. Each square is marked with an AR tag or a shape or just unmarked. When the robot encounters a square with AR-tag it will turn green led light. If the robot encounters a square with the right shape which has been identified in location 2, it will turn orange light. Otherwise, if the square is unmarked it will turn the red light. At the beginning of each run, the TA will ask the team member to park at one specific location which should be sent to the robot by joy controller. There are eight parking spots in total. Boxes are placed to separate the new task with competition2. After the robot finishing the searching mission, a new point called ‘on-ramp’ will determine where the robot should exit the new task. The moment the robot hits the ‘on-ramp’ point, it will find the following white line in competition 2 and continue to the same last task as Competiotion2. 
+The third competition is based on the second competition. Besides the original tasks, there are three more tasks: 1. Parking at the right AR tag. 
+![alt text](https://github.com/HumphreyLu6/CMPUT-412-C3/blob/master/images%20and%20video/1.jpg)
+2. Parking at the right shape that has been identified.
+![alt text](https://github.com/HumphreyLu6/CMPUT-412-C3/blob/master/images%20and%20video/6.jpg)
+3. Parking at the specific square as asked. 
+![alt text](https://github.com/HumphreyLu6/CMPUT-412-C3/blob/master/images%20and%20video/2.jpg)
+The additional task is held between original task two and task three where there is an off-ramp point, there will be no more white line on the ground. The robot will be navigating by itself without following the line. There are red squares outlined as parking spots for the robots. Each square is marked with an AR tag or a shape or just unmarked. When the robot encounters a square with AR-tag it will turn green led light. If the robot encounters a square with the right shape which has been identified in location 2, it will turn orange light. Otherwise, if the square is unmarked it will turn the red light. At the beginning of each run, the TA will ask the team member to park at one specific location which should be sent to the robot by joy controller. There are eight parking spots in total. Boxes are placed to separate the new task with competition2. After the robot finishing the searching mission, a new point called ‘on-ramp’ will determine where the robot should exit the new task. The moment the robot hits the ‘on-ramp’ point, it will find the following white line in competition 2 and continue to the same last task as Competiotion2. 
+![alt text](https://github.com/HumphreyLu6/CMPUT-412-C3/blob/master/images%20and%20video/4.jpg)
 
 
 ## _**Pre-requisites**_
@@ -65,18 +72,26 @@ Create or navigate the existing catkin workspace and clone our repository.
 
 
 #### Notes:
+
 Strategy for camera:
+
 -    We put additional usb camera at the front of the turtle_bot to follow the white line on the ground and the asus camera is used to detect shape of the target.
 -    In the function usb_callback, we use the usb camera to detect whether we have a long red line to  short red line. The method is that if it is a long red line there won't be any white in the middle of the track. We think its quicker and easier to identify the difference between two lines.
 -    If the object cannot be included into the camera, the robot can back up a little bit to fit the camera view into the right position.
+
 Image detection process:
+
 -    Used cv2.pyrMeanShiftFiltering to blur image when detect contours' shapes, but this caused lag.
 -    To ensure shape detect result is correct, we detect twice with a few seconds gap to check if results are the same.
+
 code arragemnet:
+
 -    The code file for work4 is seperate from the main code for further improvement on the coding style.
 -    Heavliy used simple task functions like rotation has been seperated from the original file to increase simplicity.
 -    Based on the experience we collected from demo4 and demo5, we carefully develop the map using view_nevigation package.- -    To improve the runtime performance, we choose to not launch rviz, this can be enabled through commenting out lines in launch file.
+
 map and waypoint strategy:
+
 -    After a fairly accurate map is established, we set the way points based on the map. By testing out each waypoint one by one, we want to make sure the run time error genreate by the odem has the minimum effect on the final parking spot.
 -    Since the usb camera is stilling running during parking into these red squares, it is likely that the robot takes the parking red square as the functional red lines. New global varibies have set to avoid these conflicts.
 searching strategy:
