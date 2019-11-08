@@ -83,9 +83,9 @@ Create or navigate the existing catkin workspace and clone our repository.
 
 Strategy for camera:
 
--    We put additional usb camera at the front of the turtle_bot to follow the white line on the ground and the asus camera is used to detect shape of the target.
+-    We put additional usb camera at the lower front of the turtle_bot to follow the white line on the ground and the asus camera is used to detect shape of the target. The lower position of the camera improves precision with less exception tolerance as a trade-off.
 -    In the function usb_callback, we use the usb camera to detect whether we have a long red line to  short red line. The method is that if it is a long red line there won't be any white in the middle of the track. We think its quicker and easier to identify the difference between two lines.
--    If the object cannot be included into the camera, the robot can back up a little bit to fit the camera view into the right position.
+-    If the object cannot be included into the camera, the robot can fall up a little bit to fit the camera view into the right position.
 
 Image detection process:
 
@@ -95,7 +95,7 @@ Image detection process:
 code arragemnet:
 
 -    The code file for work4 is seperate from the main code for further improvement on the coding style.
--    Heavliy used simple task functions like rotation has been seperated from the original file to increase simplicity.
+-    Heavliy used simple task functions like rotation and signal (led and sound) have been seperated from the original file to increase simplicity and reusability.
 -    Based on the experience we collected from demo4 and demo5, we carefully develop the map using view_nevigation package.- -    To improve the runtime performance, we choose to not launch rviz, this can be enabled through commenting out lines in launch file.
 
 map and waypoint strategy:
@@ -104,8 +104,9 @@ map and waypoint strategy:
 -    Since the usb camera is stilling running during parking into these red squares, it is likely that the robot takes the parking red square as the functional red lines. New global varibies have set to avoid these conflicts.
 searching strategy:
 -    We used exhaustive search for the parking spot to make sure the robot complete the task and fit into all the squares.
--    Set initial pose when the robot is off ramp instead of the start point of the game.
+-    Set initial pose when the robot is off ramp instead of the start point of the game to help localization and precision.
 -    The docking process is based on waypoints. We test the waypoints one by one to ensure the the robot will dock on point.
+-    The robot will skip the rest of waypoints if all task at location 4 have been completed.
 
 #### Sources
 - https://github.com/jackykc/comp5
