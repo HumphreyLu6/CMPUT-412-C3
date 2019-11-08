@@ -2,7 +2,7 @@
  
 ## ***Purpose***
 
-Using a Turtlebot to do multiple tasks consists of following track, detecting contours and docking with GMapping, AMCL.
+Using a Turtlebot to do multiple tasks consists of following track, detecting contours and docking with GMapping, AMCL. Scores are given based on the completeness of tasks, performance of each task and time usage of each run.
 
 <img src="https://github.com/HumphreyLu6/CMPUT-412-C3/blob/master/images%20and%20video/1.jpg" width="40%" height="40%">
 
