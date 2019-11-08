@@ -76,28 +76,6 @@ Create or navigate the existing catkin workspace and clone our repository.
 
 -  A map file of the lab is added to the file folder which is used for work4(the new location).   In the c3.launch file, the ar_track_alvar is used to regonize the AR tag. We comment out the view_nevigation package to increase the performance of the robot at runtime.
 
-
-## _**States**_
--    Our basic strategy includes using pid controller to follow lines, using opencv contour shape detection to detect shapes, using amcl to do localization, using move_base to reach goal point in the location 4.
--    Here are the process details:
--    Firstly, the robot will start with "Wait" state, once the user send unmarked dock point number and start signal, the robot will start follow the white line.
--    As the robot is running, it will find out whether there is a red long line(which means stop) or a red short line(which means detecting the image) and decide if it needs to switch states.
--    For different working tasks, the difference is based on the global variable of "current_work"
--    The state machine will have some kind of work flow like this:
-        - 1. Following state will keep the robot following the white line
-        - 2. If the robot hit a long red line it will enter the PassThrough state to perform a stop at the long red line
-        - 3. If the robot hit a short red line it will enter the TaskControl state to determine how many 90 degrees it should trun and then it goes into Rotate state which controls the robot's rotation based on the yaw value.
-        - 4. In the Rotate state, the robot will determine what kind of work it will do based on current value.
-        - 5. For the task to count number of white tubes, the robot will detect how many red contours are in the front and indicate the number by Led lights and sound.
-        - 6. For the task at location 2, the robot will detect how many red/green contours are in the front and indicate the total number by Led lights and sound, the robot will remember what shape the green contour is in location2.
-        - 7. The robot goes 'off ramp' to dock at three locations, one has a the AR tag in the front, one has a contour with same shape in location 2 in the front, one has the index specified in the biginning of the game. The robot will parks in the center of the each square/location.
-        - 9. After the robot finishs all parking task it will go to the 'on ramp' point and continue the 'lcoation 3' task, which is find the matching shape at location 2.
-        - 10. The robot will go through all the shapes when selecting the shapes. If it found the right one it will make a turn on a light and make a sound.
-        - 11. The run is ended when the robot is back to the starting line
-
-![Fig1](smach.png)
-
-
 ## ***Strategies***:
 
 - Track followling:
@@ -127,6 +105,26 @@ searching strategy:
     - Heavliy used simple task functions like rotation and signal (led and sound) have been seperated from the original file to increase simplicity and reusability.
     - Based on the experience we collected from demo4 and demo5, we carefully develop the map using view_nevigation package.
     - To improve the runtime performance, we choose to not launch rviz, this can be enabled through commenting out lines in launch file.
+
+## _**States**_
+-    Our basic strategy includes using pid controller to follow lines, using opencv contour shape detection to detect shapes, using amcl to do localization, using move_base to reach goal point in the location 4.
+-    Here are the process details:
+-    Firstly, the robot will start with "Wait" state, once the user send unmarked dock point number and start signal, the robot will start follow the white line.
+-    As the robot is running, it will find out whether there is a red long line(which means stop) or a red short line(which means detecting the image) and decide if it needs to switch states.
+-    For different working tasks, the difference is based on the global variable of "current_work"
+-    The state machine will have some kind of work flow like this:
+        - 1. Following state will keep the robot following the white line
+        - 2. If the robot hit a long red line it will enter the PassThrough state to perform a stop at the long red line
+        - 3. If the robot hit a short red line it will enter the TaskControl state to determine how many 90 degrees it should trun and then it goes into Rotate state which controls the robot's rotation based on the yaw value.
+        - 4. In the Rotate state, the robot will determine what kind of work it will do based on current value.
+        - 5. For the task to count number of white tubes, the robot will detect how many red contours are in the front and indicate the number by Led lights and sound.
+        - 6. For the task at location 2, the robot will detect how many red/green contours are in the front and indicate the total number by Led lights and sound, the robot will remember what shape the green contour is in location2.
+        - 7. The robot goes 'off ramp' to dock at three locations, one has a the AR tag in the front, one has a contour with same shape in location 2 in the front, one has the index specified in the biginning of the game. The robot will parks in the center of the each square/location.
+        - 9. After the robot finishs all parking task it will go to the 'on ramp' point and continue the 'lcoation 3' task, which is find the matching shape at location 2.
+        - 10. The robot will go through all the shapes when selecting the shapes. If it found the right one it will make a turn on a light and make a sound.
+        - 11. The run is ended when the robot is back to the starting line
+
+![Fig1](smach.png)
 
 ## ***Sources***
 - https://github.com/jackykc/comp5
