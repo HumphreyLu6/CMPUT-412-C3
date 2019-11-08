@@ -2,13 +2,21 @@
 _**Purpose**_
 
 The third competition is based on the second competition. Besides the original tasks, there are three more tasks: 1. Parking at the right AR tag. 
-![alt text](https://github.com/HumphreyLu6/CMPUT-412-C3/blob/master/images%20and%20video/1.jpg)
+
+<img src="https://github.com/HumphreyLu6/CMPUT-412-C3/blob/master/images%20and%20video/1.jpg" width="40%" height="40%">
+
 2. Parking at the right shape that has been identified.
-![alt text](https://github.com/HumphreyLu6/CMPUT-412-C3/blob/master/images%20and%20video/6.jpg)
+
+<img src="https://github.com/HumphreyLu6/CMPUT-412-C3/blob/master/images%20and%20video/6.jpg" width="40%" height="40%">
+
 3. Parking at the specific square as asked. 
-![alt text](https://github.com/HumphreyLu6/CMPUT-412-C3/blob/master/images%20and%20video/2.jpg)
+
+<img src="https://github.com/HumphreyLu6/CMPUT-412-C3/blob/master/images%20and%20video/2.jpg" width="40%" height="40%">
+
 The additional task is held between original task two and task three where there is an off-ramp point, there will be no more white line on the ground. The robot will be navigating by itself without following the line. There are red squares outlined as parking spots for the robots. Each square is marked with an AR tag or a shape or just unmarked. When the robot encounters a square with AR-tag it will turn green led light. If the robot encounters a square with the right shape which has been identified in location 2, it will turn orange light. Otherwise, if the square is unmarked it will turn the red light. At the beginning of each run, the TA will ask the team member to park at one specific location which should be sent to the robot by joy controller. There are eight parking spots in total. Boxes are placed to separate the new task with competition2. After the robot finishing the searching mission, a new point called ‘on-ramp’ will determine where the robot should exit the new task. The moment the robot hits the ‘on-ramp’ point, it will find the following white line in competition 2 and continue to the same last task as Competiotion2. 
-![alt text](https://github.com/HumphreyLu6/CMPUT-412-C3/blob/master/images%20and%20video/4.jpg)
+
+<img src="https://github.com/HumphreyLu6/CMPUT-412-C3/blob/master/images%20and%20video/4.jpg" width="40%" height="40%">
+
 
 
 ## _**Pre-requisites**_
