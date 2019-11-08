@@ -68,7 +68,7 @@ Create or navigate the existing catkin workspace and clone our repository.
 -  A map file of the lab is added to the file folder which is used for work4(the new location).   In the c3.launch file, the ar_track_alvar is used to regonize the AR tag. We comment out the view_nevigation package to increase the performance of the robot at runtime.
 
 
-## _**Process and Strategy**_
+## _**States**_
 -    Our basic strategy includes using pid controller to follow lines, using opencv contour shape detection to detect shapes, using amcl to do localization, using move_base to reach goal point in the location 4.
 -    Here are the process details:
 -    Firstly, the robot will start with "Wait" state, once the user send unmarked dock point number and start signal, the robot will start follow the white line.
@@ -89,7 +89,7 @@ Create or navigate the existing catkin workspace and clone our repository.
 ![Fig1](smach.png)
 
 
-#### Strategies:
+## ***Strategies***:
 
 - Track followling:
 
@@ -119,7 +119,7 @@ searching strategy:
     - The docking process is based on waypoints. We test the waypoints one by one to ensure the the robot will dock on point.
     - The robot will skip the rest of waypoints if all task at location 4 have been completed.
 
-#### Sources
+## ***Sources***
 - https://github.com/jackykc/comp5
 - https://github.com/cmput412
 - https://github.com/bofrim/CMPUT_412
