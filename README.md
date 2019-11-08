@@ -10,27 +10,27 @@ This repo is the competition 3 implementations of group 3, and it is built upon
 
 Using a Turtlebot to do multiple tasks consists of following track, detecting contours and docking with GMapping, AMCL. Scores are given based on the completeness of tasks, performance of each task and time usage of each run.
 
-<img src="https://github.com/HumphreyLu6/CMPUT-412-C3/blob/master/images%20and%20video/1.jpg" width="40%" height="40%">
-
 ## ***Tasks***
 
 In general, the robot needs to follow a track and do different specific taks at various locations. The track is white lines on the ground, full read lines and half red lines indicates the robot needs to stop, and half red lines also indicate the robot has specific tasks in the locations. Tasks for each location are detailed as following:
 
-<img src="https://github.com/HumphreyLu6/CMPUT-412-C3/blob/master/images%20and%20video/6.jpg" width="40%" height="40%">
+<img src="https://github.com/HumphreyLu6/CMPUT-412-C3/blob/master/images%20and%20video/course.png" width="40%" height="40%">
 
 - ***location 1*** is the first location maked by a short red line. Certain number (1~3) of objects are placed 90 degrees counterclockwise from the line. The robot needs to count the number of objects without leaving the track.
 
+<img src="https://github.com/HumphreyLu6/CMPUT-412-C3/blob/master/images%20and%20video/location1.png" width="40%" height="40%">
+
 - ***location 2*** is the second location, which located in the end of an additional track which branched off at a short red line. A white board with certain number(1~3) of shapes is placed at location 2, one of the shape is in green and others are in red. The robot needs to count the number of shapes and detect what shape the the green shape is.
+
+<img src="https://github.com/HumphreyLu6/CMPUT-412-C3/blob/master/images%20and%20video/location2.png" width="40%" height="40%">
 
 - ***location 4*** is the third location led by a off ramp track. 8 parking spots are located on the floor which are represented by red squares. The robot needs to dock at three specific spots. One spot has a AR tag places in the front, one spot has a red shape in the front, the shape is same as the green shape at location 2, the thrid spot is specified at the beginning of the competition. The robot need to park inside of the red square to get the full mark. After finishing parking at three spots, the robot needs to find the on ramp location and keep following the track.
 
+<img src="https://github.com/HumphreyLu6/CMPUT-412-C3/blob/master/images%20and%20video/location4.png" width="40%" height="40%">
+
 - ***location 3*** is the last location which is marked by three hald red lines, each red line indicated there is a shape located counterclockwise from the track, the robot needs to find the one with same shape as the green shape at location 2.
 
-<img src="https://github.com/HumphreyLu6/CMPUT-412-C3/blob/master/images%20and%20video/2.jpg" width="40%" height="40%">
-
-<img src="https://github.com/HumphreyLu6/CMPUT-412-C3/blob/master/images%20and%20video/4.jpg" width="40%" height="40%">
-
-
+<img src="https://github.com/HumphreyLu6/CMPUT-412-C3/blob/master/images%20and%20video/location3.png" width="40%" height="40%">
 
 ## _**Pre-requisites**_
 
@@ -129,3 +129,5 @@ searching strategy:
 - https://github.com/TianqiCS/CMPUT-412-C2
 - https://github.com/HumphreyLu6/CMPUT412_demo5_p2
 - https://www.cnblogs.com/kuangxionghui/p/8335853.html
+- https://eclass.srv.ualberta.ca/pluginfile.php/5209083/mod_page/content/60/Competition%202_F19%20Line%20Following%20and%20object%20counting.pdf
+- https://eclass.srv.ualberta.ca/pluginfile.php/5209083/mod_page/content/60/Comp3_F19GMapping%20and%20AMCL.pdf
