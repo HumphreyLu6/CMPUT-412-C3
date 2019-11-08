@@ -1,27 +1,8 @@
 ﻿# CMPUT412 FALL 2019 - competition three report
 _**Purpose**_
 
-In this competition, the course from Competition 2 is extended to have an area where the robot can navigate off the white line. These areas will be marked by an “off-ramp.” The off-ramp will be a white line branching off from the main course . In the off-ramp area, Location 4, the robot will have the choice of completing several “docking” (i.e. parking) tasks at 55cm x 55cm parking spots. The parking spots will stay static, so the robot can use a map and localization to find them; however, the tasks for any particular parking spot will be randomized. The robot will use 'on ramp' and 'off ramp' to get on or off the track.
+    The third competition is based on the second competition. Besides the original tasks, there are three more tasks: 1. Parking at the right AR tag. 2. Parking at the right shape that has been identified. 3. Parking at the specific square as asked. The additional task is held between original task two and task three where there is an off-ramp point, there will be no more white line on the ground. The robot will be navigating by itself without following the line. There are red squares outlined as parking spots for the robots. Each square is marked with an AR tag or a shape or just unmarked. When the robot encounters a square with AR-tag it will turn green led light. If the robot encounters a square with the right shape which has been identified in location 2, it will turn orange light. Otherwise, if the square is unmarked it will turn the red light. At the beginning of each run, the TA will ask the team member to park at one specific location which should be sent to the robot by joy controller. There are eight parking spots in total. Boxes are placed to separate the new task with competition2. After the robot finishing the searching mission, a new point called ‘on-ramp’ will determine where the robot should exit the new task. The moment the robot hits the ‘on-ramp’ point, it will find the following white line in competition 2 and continue to the same last task as Competiotion2. 
 
-Here are the tasks from competition 2.
-
-A race track shaped loop has been with a solid white line marking the path to follow. When travelling in the counterclockwise (CCW) direction, red stop lines indicate where the robot should stop. The robot will be initially placed in full stop at the first stop line. The robot must stay on the line while looping around the track. There are four stop lines, once the robot have done a full loop and reach the start stop line then one run is done.
-
-There are 3 locations for the robot to get extra points. Location 1 is marked by a short red line adjacent to the track, the robot has the chance to earn points by counting the number of objects (one, two, or three) at this location. Location 2 is down a detour, marked by a red line adjacent to the track, again the robot has the chance to earn points by counting the number of objects (one, two, or three) and determining the shape of the green object. Location 3 has three separate red line markers, one for each shape (square, circle, triangle). See Fig 1 below for sketch of the course. The robot will stop at the shape found at Location 2.
-
-![Fig2](/images and video/1.jpg)
-
-Location 1: The first object counting location is located 90 degrees CCW from the line. The robot can count the number of objects without leaving the line. After counting the objects, the robot should display the count using both the LEDs and sound. For example, two objects should be displayed as two LEDs turned on, and two sounds .  Correct object count indicated by LEDs and Sounds
-
- Location 2: The second object counting location is also located 90 degrees CCW from the line, but the objects are placed at the end of an additional white line (e.g. a path leading to a dead end with the objects). The objects will be shapes (circle, triangle or square), and two will be red and one will be green.
-
-Location 3: The final challenge is to determine the shape of the green object at Location 2 (circle, square, or triangle) and find its matching shape at one of three possible positions at Location 3, on the second half of the course. The shapes at Location 3 will be red. When the robot find the matching object shape it must make a sound to signal the shape has been found. The robot must be facing the matching shape so that judges know which one has been picked.
-
-Location 4: There are eight parking spots taped on the floor. The robot will have to park at the correct spot to receive points. In all cases, the robot must be inside the 55cm x 55cm parking spot. One task will be parking by an ARtag. Another task will be parking at an unlabeled parking spot (still marked with tape, but no ARtag) that will be specified at the start of the run (The robot MUST enter the parking spot number using the logitech controller). The final task will be to park at the Green shape that the robot identified at Location 2 (three spots will be marked by shapes: circle, square, or triangle).
-To signal that the robot have parked use the leds and make a sound:
-- ARTag - turn led green
-- - Shape - turn led orange
--  - Unmarked - turn led red
 
 ## _**Pre-requisites**_
 
