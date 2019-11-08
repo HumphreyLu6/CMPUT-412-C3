@@ -1,6 +1,12 @@
 # CMPUT412 FALL 2019 - competition 3 report
- 
-## ***Purpose***
+
+## ***Overview***
+
+This repo is the competition 3 implementations of group 3, and it is built upon
+[https://github.com/TianqiCS/CMPUT412-C2]
+[https://github.com/TianqiCS/CMPUT412-C1]
+
+## ***Competiiton Objectives***
 
 Using a Turtlebot to do multiple tasks consists of following track, detecting contours and docking with GMapping, AMCL. Scores are given based on the completeness of tasks, performance of each task and time usage of each run.
 
@@ -38,9 +44,6 @@ In general, the robot needs to follow a track and do different specific taks at 
 
     -   Smach  [http://wiki.ros.org/smach](http://wiki.ros.org/smach)
 
-This project is built upon
-[https://github.com/TianqiCS/CMPUT412-C2]
-[https://github.com/TianqiCS/CMPUT412-C1]
 Create or navigate the existing catkin workspace and clone our repository.
 
 
