@@ -96,7 +96,8 @@ code arragemnet:
 
 -    The code file for work4 is seperate from the main code for further improvement on the coding style.
 -    Heavliy used simple task functions like rotation and signal (led and sound) have been seperated from the original file to increase simplicity and reusability.
--    Based on the experience we collected from demo4 and demo5, we carefully develop the map using view_nevigation package.- -    To improve the runtime performance, we choose to not launch rviz, this can be enabled through commenting out lines in launch file.
+-    Based on the experience we collected from demo4 and demo5, we carefully develop the map using view_nevigation package.
+- -    To improve the runtime performance, we choose to not launch rviz, this can be enabled through commenting out lines in launch file.
 
 map and waypoint strategy:
 
