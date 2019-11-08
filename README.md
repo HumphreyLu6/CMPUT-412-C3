@@ -111,13 +111,6 @@ Create or navigate the existing catkin workspace and clone our repository.
     - Used cv2.pyrMeanShiftFiltering to blur image when detect contours' shapes, but this caused nonnegligible lag.
     - To ensure shape detect result is correct, we detect twice with a few seconds gap to check if results are the same.
 
-- Project management:
-
-    - The code file for work4 is seperate from the main code for further improvement on the coding style.
-    - Heavliy used simple task functions like rotation and signal (led and sound) have been seperated from the original file to increase simplicity and reusability.
-    - Based on the experience we collected from demo4 and demo5, we carefully develop the map using view_nevigation package.
-    - To improve the runtime performance, we choose to not launch rviz, this can be enabled through commenting out lines in launch file.
-
 - Docking with AMCL and GMapping:
 
     - After a fairly accurate map is established, we set the way points based on the map. By testing out each waypoint one by one, we want to make sure the run time error genreate by the odem has the minimum effect on the final parking spot.
@@ -127,6 +120,13 @@ searching strategy:
     - Set initial pose when the robot is off ramp instead of the start point of the game to help localization and precision.
     - The docking process is based on waypoints. We test the waypoints one by one to ensure the the robot will dock on point.
     - The robot will skip the rest of waypoints if all task at location 4 have been completed.
+
+- Project management:
+
+    - The code file for work4 is seperate from the main code for further improvement on the coding style.
+    - Heavliy used simple task functions like rotation and signal (led and sound) have been seperated from the original file to increase simplicity and reusability.
+    - Based on the experience we collected from demo4 and demo5, we carefully develop the map using view_nevigation package.
+    - To improve the runtime performance, we choose to not launch rviz, this can be enabled through commenting out lines in launch file.
 
 ## ***Sources***
 - https://github.com/jackykc/comp5
