@@ -1,7 +1,8 @@
 ﻿# CMPUT412 FALL 2019 - competition three report
-_**Purpose**_
+ 
+## _**Purpose**_
 
-The third competition is based on the second competition. Besides the original tasks, there are three more tasks: 1. Parking at the right AR tag. 
+Using a Turtlebot to do multiple tasks consists of following track, detecting contours and docking with GMapping, AMCL.
 
 <img src="https://github.com/HumphreyLu6/CMPUT-412-C3/blob/master/images%20and%20video/1.jpg" width="40%" height="40%">
 
@@ -85,7 +86,7 @@ Strategy for camera:
 
 -    We put additional usb camera at the lower front of the turtle_bot to follow the white line on the ground and the asus camera is used to detect shape of the target. The lower position of the camera improves precision with less exception tolerance as a trade-off.
 -    In the function usb_callback, we use the usb camera to detect whether we have a long red line to  short red line. The method is that if it is a long red line there won't be any white in the middle of the track. We think its quicker and easier to identify the difference between two lines.
--    If the object cannot be included into the camera, the robot can fall up a little bit to fit the camera view into the right position.
+-    To ensure the target objects are included into the camera, the robot back up a little bit to fit the camera view into the right position.
 
 Image detection process:
 
@@ -97,7 +98,7 @@ code arragemnet:
 -    The code file for work4 is seperate from the main code for further improvement on the coding style.
 -    Heavliy used simple task functions like rotation and signal (led and sound) have been seperated from the original file to increase simplicity and reusability.
 -    Based on the experience we collected from demo4 and demo5, we carefully develop the map using view_nevigation package.
-- -    To improve the runtime performance, we choose to not launch rviz, this can be enabled through commenting out lines in launch file.
+-    To improve the runtime performance, we choose to not launch rviz, this can be enabled through commenting out lines in launch file.
 
 map and waypoint strategy:
 
